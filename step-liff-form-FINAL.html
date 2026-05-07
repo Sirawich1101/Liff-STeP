@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>คำขอเอกสารแบบแปลน — STeP CMU</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1A3A5C;
+  --navy2: #2E6DA4;
+  --tint: #EBF3FB;
+  --w: #FFFFFF;
+  --bg: #F8F9FA;
+  --border: #CED4DA;
+  --text: #212529;
+  --sub: #6C757D;
+  --r: 8px;
+  --font: 'Sarabun', sans-serif;
+}
+html { font-size: 17px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-text-size-adjust: 100%; }
+
+/* HEADER */
+.header { background: var(--navy); padding: 22px 18px 30px; position: relative; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: var(--bg); border-radius: 16px 16px 0 0; }
+.header h1 { color: var(--w); font-size: 23px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
+.header p { color: #90BEE0; font-size: 14px; }
+
+/* PROGRESS */
+.prog-bar { background: var(--w); padding: 14px 18px 12px; border-bottom: 1px solid var(--border); }
+.prog-steps { display: flex; align-items: center; }
+.ps { display: flex; align-items: center; gap: 6px; flex: 1; }
+.pc { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--sub); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .3s; }
+.pc.done { background: var(--navy); color: var(--w); }
+.pc.active { background: var(--navy2); color: var(--w); }
+.pl { font-size: 12px; color: var(--sub); flex: 1; }
+.pl.active { color: var(--navy2); font-weight: 600; }
+.pline { height: 2px; width: 14px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
+.pline.done { background: var(--navy); }
+
+/* BODY */
+.form-body { padding: 20px 18px; }
+.step { display: none; }
+.step.active { display: block; }
+
+.sec-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--tint); }
+
+/* FIELDS */
+.field { margin-bottom: 18px; }
+label { display: block; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+label .req { color: #C0392B; margin-left: 2px; }
+input, textarea {
+  width: 100%; background: var(--w); border: 2px solid var(--border);
+  border-radius: var(--r); padding: 13px 14px; font-family: var(--font);
+  font-size: 16px; color: var(--text); outline: none; transition: border-color .2s;
+  -webkit-appearance: none; line-height: 1.4;
+}
+input:focus, textarea:focus { border-color: var(--navy2); }
+input.err, textarea.err { border-color: #C0392B; background: #FFF5F5; }
+textarea { resize: none; height: 90px; }
+.emsg { font-size: 13px; color: #C0392B; margin-top: 5px; display: none; font-weight: 500; }
+
+/* DOC TYPES */
+.doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dbtn {
+  background: var(--w); border: 2px solid var(--border); border-radius: var(--r);
+  padding: 14px 10px; font-family: var(--font); font-size: 15px; font-weight: 500;
+  color: var(--text); cursor: pointer; text-align: center; line-height: 1.4;
+  transition: all .15s; -webkit-tap-highlight-color: transparent;
+}
+.dbtn.sel { background: var(--tint); border-color: var(--navy2); color: var(--navy); font-weight: 700; }
+.dbtn:last-child:nth-child(odd) { grid-column: 1/-1; }
+.dhint { font-size: 13px; color: var(--sub); margin-top: 8px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag { background: var(--navy); color: var(--w); font-size: 13px; padding: 4px 12px; border-radius: 20px; }
+
+/* SUMMARY */
+.sumbox { background: var(--tint); border: 2px solid #B8D4EC; border-radius: var(--r); padding: 16px; margin: 18px 0; }
+.sumtitle { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+.srow { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid #C8DFF0; font-size: 15px; }
+.srow:last-child { border-bottom: none; }
+.sk { color: var(--sub); min-width: 90px; flex-shrink: 0; }
+.sv { color: var(--navy); font-weight: 600; text-align: right; flex: 1; }
+
+/* BUTTONS */
+.nav-row { display: flex; gap: 10px; margin-top: 24px; padding-bottom: 20px; }
+.btn-back { background: var(--w); border: 2px solid var(--border); border-radius: var(--r); padding: 0 18px; font-family: var(--font); font-size: 16px; color: var(--sub); cursor: pointer; height: 54px; flex-shrink: 0; }
+.btn-next, .btn-submit { flex: 1; height: 54px; background: var(--navy); border: none; border-radius: var(--r); font-family: var(--font); font-size: 17px; font-weight: 700; color: var(--w); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.btn-submit:disabled { opacity: .55; cursor: not-allowed; }
+
+/* SUCCESS */
+#successScreen { display: none; }
+#successScreen.show { display: block; }
+.suc-top { background: var(--navy); padding: 32px 18px; text-align: center; }
+.suc-icon { width: 64px; height: 64px; background: rgba(255,255,255,.15); border: 3px solid rgba(255,255,255,.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; color: var(--w); }
+.suc-top h2 { color: var(--w); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.suc-top p { color: #90BEE0; font-size: 15px; line-height: 1.6; }
+.code-box { background: var(--w); padding: 20px 18px; border-bottom: 1px solid var(--border); text-align: center; }
+.code-lbl { font-size: 12px; color: var(--sub); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+.code-val { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: 2px; }
+.steps-box { background: var(--w); padding: 20px 18px; }
+.steps-ttl { font-size: 13px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+.sitem { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--bg); align-items: flex-start; }
+.sitem:last-child { border-bottom: none; }
+.snum { width: 30px; height: 30px; background: var(--navy); color: var(--w); border-radius: 50%; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stxt { font-size: 15px; color: var(--text); line-height: 1.55; padding-top: 4px; }
+.close-wrap { padding: 16px 18px 40px; background: var(--w); }
+.close-btn { width: 100%; height: 54px; background: var(--navy); color: var(--w); border: none; border-radius: var(--r); font-family: var(--font); font-size: 17px; font-weight: 700; cursor: pointer; }
+
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: var(--w); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>คำขอเอกสารแบบแปลน</h1>
+  <p>อุทยานวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเชียงใหม่</p>
+</div>
+
+<div class="prog-bar" id="progBar">
+  <div class="prog-steps">
+    <div class="ps"><div class="pc active" id="pc1">1</div><div class="pl active" id="pl1">ข้อมูลผู้ขอ</div></div>
+    <div class="pline" id="ln1"></div>
+    <div class="ps"><div class="pc" id="pc2">2</div><div class="pl" id="pl2">รายละเอียด</div></div>
+    <div class="pline" id="ln2"></div>
+    <div class="ps"><div class="pc" id="pc3">3</div><div class="pl" id="pl3">ยืนยัน</div></div>
+  </div>
+</div>
+
+<div class="form-body" id="formBody">
+
+  <div class="step active" id="step1">
+    <div class="sec-title">ข้อมูลผู้ยื่นคำขอ</div>
+    <div class="field">
+      <label>ชื่อ-นามสกุล <span class="req">*</span></label>
+      <input type="text" id="f_name" placeholder="กรอกชื่อ-นามสกุล">
+      <div class="emsg" id="e_name">กรุณากรอกชื่อ-นามสกุล</div>
+    </div>
+    <div class="field">
+      <label>หน่วยงาน / บริษัท <span class="req">*</span></label>
+      <input type="text" id="f_org" placeholder="กรอกชื่อหน่วยงานหรือบริษัท">
+      <div class="emsg" id="e_org">กรุณากรอกชื่อหน่วยงาน</div>
+    </div>
+    <div class="field">
+      <label>หมายเลขโทรศัพท์ <span class="req">*</span></label>
+      <input type="tel" id="f_tel" placeholder="เช่น 081-234-5678">
+      <div class="emsg" id="e_tel">กรุณากรอกหมายเลขโทรศัพท์ที่ถูกต้อง</div>
+    </div>
+    <div class="field">
+      <label>อีเมลสำหรับรับเอกสาร <span class="req">*</span></label>
+      <input type="email" id="f_email" placeholder="เช่น name@email.com">
+      <div class="emsg" id="e_email">กรุณากรอกอีเมลที่ถูกต้อง</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-next" onclick="goNext(1)">ถัดไป</button>
+    </div>
+  </div>
+
+  <div class="step" id="step2">
+    <div class="sec-title">รายละเอียดคำขอ</div>
+    <div class="field">
+      <label>ประเภทเอกสารที่ต้องการ <span class="req">*</span></label>
+      <div class="doc-grid">
+        <button type="button" class="dbtn" onclick="toggleDoc(this,'แบบสถาปัตยกรรม')">แบบสถาปัตยกรรม</button>
+        <button type="button" class="dbtn" onclick="toggleDoc(this,'แบบวิศวกรรมโครงสร้าง')">แบบวิศวกรรมโครงสร้าง</button>
+        <button type="button" class="dbtn" onclick="toggleDoc(this,'แบบระบบไฟฟ้า')">แบบระบบไฟฟ้า</button>
+        <button type="button" class="dbtn" onclick="toggleDoc(this,'แบบระบบสุขาภิบาล')">แบบระบบสุขาภิบาล</button>
+        <button type="button" class="dbtn" onclick="toggleDoc(this,'อื่นๆ')">อื่นๆ</button>
+      </div>
+      <div class="dhint">สามารถเลือกได้มากกว่า 1 ประเภท</div>
+      <div class="tags" id="tagRow"></div>
+      <div class="emsg" id="e_doc">กรุณาเลือกประเภทเอกสารอย่างน้อย 1 รายการ</div>
+    </div>
+    <div class="field">
+      <label>พื้นที่ที่ต้องการใช้งาน <span class="req">*</span></label>
+      <input type="text" id="f_area" placeholder="เช่น Zone A อาคาร 1 ชั้น 3">
+      <div class="emsg" id="e_area">กรุณาระบุพื้นที่</div>
+    </div>
+    <div class="field">
+      <label>วัตถุประสงค์โครงการ <span class="req">*</span></label>
+      <textarea id="f_obj" placeholder="อธิบายวัตถุประสงค์การใช้งานแบบแปลน"></textarea>
+      <div class="emsg" id="e_obj">กรุณาระบุวัตถุประสงค์</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(2)">← ย้อนกลับ</button>
+      <button class="btn-next" onclick="goNext(2)">ถัดไป</button>
+    </div>
+  </div>
+
+  <div class="step" id="step3">
+    <div class="sec-title">ยืนยันคำขอ</div>
+    <div class="field">
+      <label>วันที่ต้องการใช้งาน <span class="req">*</span></label>
+      <input type="date" id="f_date">
+      <div class="emsg" id="e_date">กรุณาเลือกวันที่</div>
+    </div>
+    <div class="field">
+      <label>หมายเหตุเพิ่มเติม <span style="font-weight:400;color:var(--sub)">(ถ้ามี)</span></label>
+      <textarea id="f_note" placeholder="ข้อมูลเพิ่มเติมหรือความต้องการพิเศษ" style="height:76px;"></textarea>
+    </div>
+    <div class="sumbox">
+      <div class="sumtitle">ตรวจสอบข้อมูลก่อนส่ง</div>
+      <div id="summary"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(3)">← ย้อนกลับ</button>
+      <button class="btn-submit" id="submitBtn" onclick="doSubmit()">ส่งคำขอ</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUCCESS -->
+<div id="successScreen">
+  <div class="suc-top">
+    <h2>ส่งคำขอเรียบร้อยแล้ว</h2>
+    <p>คำขอได้รับการบันทึกในระบบแล้ว<br>เจ้าหน้าที่จะดำเนินการภายใน 3 วันทำการ</p>
+  </div>
+  <div class="code-box">
+    <div class="code-lbl">หมายเลขคำขอของท่าน</div>
+    <div class="code-val" id="codeVal">—</div>
+  </div>
+  <div class="steps-box">
+    <div class="steps-ttl">ขั้นตอนต่อไป</div>
+    <div class="sitem"><div class="snum">1</div><div class="stxt">เจ้าหน้าที่คัดเลือกเอกสารที่เกี่ยวข้องภายใน <strong>3 วันทำการ</strong></div></div>
+    <div class="sitem"><div class="snum">2</div><div class="stxt">ท่านจะได้รับเอกสารทาง <strong>อีเมล</strong> ที่ให้ไว้ พร้อมลิงก์ดาวน์โหลด</div></div>
+    <div class="sitem"><div class="snum">3</div><div class="stxt">ติดตามสถานะผ่าน <strong>LINE</strong> ได้ตลอดเวลา ระบบแจ้งเตือนทุกการเปลี่ยนแปลง</div></div>
+    <div class="sitem"><div class="snum">4</div><div class="stxt">เมื่อดำเนินการแล้ว ส่งแบบปรับปรุงกลับผ่านเมนู <strong>อัปโหลดเอกสาร</strong> ใน LINE</div></div>
+  </div>
+  <div class="close-wrap">
+    <button class="close-btn" onclick="closePage()">ปิดหน้าต่าง</button>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+const WEBHOOK = 'https://sirawichhhhhhhhh.app.n8n.cloud/webhook/submit-request';
+const LIFF_ID = '2009976605-TKtdEveT';
+
+let curStep = 1;
+let lineUid = '';
+let docs = [];
+
+// ── INIT ──
+(async function init() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) { liff.login(); return; }
+    const p = await liff.getProfile();
+    lineUid = p.userId;
+    const n = document.getElementById('f_name');
+    if (!n.value && p.displayName) n.value = p.displayName;
+  } catch(e) {
+    lineUid = 'web-' + Date.now();
+  }
+})();
+
+// ── PROGRESS ──
+function syncProgress(s) {
+  [1,2,3].forEach(i => {
+    const c = document.getElementById('pc'+i);
+    const l = document.getElementById('pl'+i);
+    c.className = 'pc' + (i<s?' done':i===s?' active':'');
+    c.textContent = i < s ? '✓' : i;
+    l.className = 'pl' + (i===s?' active':'');
+    if (i<3) document.getElementById('ln'+i).className = 'pline'+(i<s?' done':'');
+  });
+}
+
+// ── NAVIGATION ──
+function goNext(from) {
+  if (!isValid(from)) return;
+  if (from === 2) buildSummary();
+  document.getElementById('step'+from).classList.remove('active');
+  curStep = from + 1;
+  document.getElementById('step'+curStep).classList.add('active');
+  syncProgress(curStep);
+  window.scrollTo(0,0);
+}
+function goBack(from) {
+  document.getElementById('step'+from).classList.remove('active');
+  curStep = from - 1;
+  document.getElementById('step'+curStep).classList.add('active');
+  syncProgress(curStep);
+  window.scrollTo(0,0);
+}
+
+// ── VALIDATE ──
+function isValid(s) {
+  let ok = true;
+
+  // step 1 checks
+  const checks1 = [
+    { id:'f_name',  eid:'e_name',  fn: v => v.trim().length >= 2 },
+    { id:'f_org',   eid:'e_org',   fn: v => v.trim().length >= 2 },
+    { id:'f_tel',   eid:'e_tel',   fn: v => /^[0-9\-\s]{9,}$/.test(v.trim()) },
+    { id:'f_email', eid:'e_email', fn: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+  ];
+  const checks2 = [
+    { id:'f_area', eid:'e_area', fn: v => v.trim().length >= 2 },
+    { id:'f_obj',  eid:'e_obj',  fn: v => v.trim().length >= 5 },
+  ];
+  const checks3 = [
+    { id:'f_date', eid:'e_date', fn: v => v.trim().length > 0 },
+  ];
+
+  const map = {1: checks1, 2: checks2, 3: checks3};
+
+  if (s === 2) {
+    if (docs.length === 0) {
+      document.getElementById('e_doc').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('e_doc').style.display = 'none';
+    }
+  }
+
+  (map[s] || []).forEach(({id, eid, fn}) => {
+    const el = document.getElementById(id);
+    const em = document.getElementById(eid);
+    const val = el ? el.value : '';
+    if (!fn(val)) {
+      if (el) el.classList.add('err');
+      if (em) em.style.display = 'block';
+      ok = false;
+    } else {
+      if (el) el.classList.remove('err');
+      if (em) em.style.display = 'none';
+    }
+  });
+
+  return ok;
+}
+
+// ── DOC TOGGLE ──
+function toggleDoc(btn, val) {
+  const i = docs.indexOf(val);
+  if (i > -1) { docs.splice(i,1); btn.classList.remove('sel'); }
+  else { docs.push(val); btn.classList.add('sel'); }
+  document.getElementById('tagRow').innerHTML = docs.map(d=>`<span class="tag">${d}</span>`).join('');
+  if (docs.length > 0) document.getElementById('e_doc').style.display = 'none';
+}
+
+// ── SUMMARY ──
+function buildSummary() {
+  const rows = [
+    ['ชื่อ-นามสกุล', document.getElementById('f_name').value],
+    ['หน่วยงาน',     document.getElementById('f_org').value],
+    ['โทรศัพท์',     document.getElementById('f_tel').value],
+    ['อีเมล',        document.getElementById('f_email').value],
+    ['ประเภทเอกสาร', docs.join(', ')],
+    ['พื้นที่',      document.getElementById('f_area').value],
+  ];
+  document.getElementById('summary').innerHTML =
+    rows.map(([k,v]) => `<div class="srow"><span class="sk">${k}</span><span class="sv">${v}</span></div>`).join('');
+}
+
+// ── SUBMIT ──
+async function doSubmit() {
+  if (!isValid(3)) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังส่ง...';
+
+  const payload = {
+    lineUserId:    lineUid,
+    requesterName: document.getElementById('f_name').value.trim(),
+    company:       document.getElementById('f_org').value.trim(),
+    phone:         document.getElementById('f_tel').value.trim(),
+    email:         document.getElementById('f_email').value.trim(),
+    documentType:  docs.join(', '),
+    area:          document.getElementById('f_area').value.trim(),
+    objective:     document.getElementById('f_obj').value.trim(),
+    requiredDate:  document.getElementById('f_date').value,
+    note:          document.getElementById('f_note').value.trim(),
+  };
+
+  // ถ้าอยู่ใน LIFF จริง → ส่ง webhook
+  // ถ้าทดสอบใน browser → แสดงหน้าสำเร็จโดยตรง
+  const isInLIFF = lineUid && !lineUid.startsWith('web-');
+
+  if (!isInLIFF) {
+    // TEST MODE — แสดงหน้าสำเร็จโดยไม่ส่ง webhook
+    await new Promise(r => setTimeout(r, 1200)); // simulate loading
+    const fakeCode = 'STeP-DOC-' + new Date().getFullYear() + String(Math.floor(Math.random()*9000)+1000);
+    showSuccess(fakeCode);
+    return;
+  }
+
+  try {
+    const res = await fetch(WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    let code = '';
+    try {
+      const json = await res.json();
+      code = json.requestCode || '';
+    } catch(e) { code = ''; }
+
+    showSuccess(code);
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'ส่งคำขอ';
+    alert('เกิดข้อผิดพลาด กรุณาลองใหม่\nหรือติดต่อเจ้าหน้าที่ที่ 0 5394 8678');
+  }
+}
+
+// ── SHOW SUCCESS ──
+function showSuccess(code) {
+  // Hide all
+  document.querySelector('.header').style.display = 'none';
+  document.getElementById('progBar').style.display = 'none';
+  document.getElementById('formBody').style.display = 'none';
+  // Show success
+  const sc = document.getElementById('successScreen');
+  sc.style.display = 'block';
+  document.getElementById('codeVal').textContent = code ||
+    'STeP-DOC-' + new Date().getFullYear() + String(Date.now()).slice(-4);
+  window.scrollTo(0,0);
+}
+
+function closePage() {
+  try { liff.closeWindow(); } catch(e) { window.close(); }
+}
+
+syncProgress(1);
+</script>
+</body>
+</html>
