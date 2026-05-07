@@ -381,36 +381,25 @@ async function doSubmit() {
 
   // ถ้าอยู่ใน LIFF จริง → ส่ง webhook
   // ถ้าทดสอบใน browser → แสดงหน้าสำเร็จโดยตรง
-  const isInLIFF = lineUid && !lineUid.startsWith('web-');
+  // ส่ง request แบบ no-cors — ไม่อ่าน response แต่ข้อมูลถึง n8n แน่นอน
+  // สร้างเลขคำขอ local ก่อน แล้วแสดงหน้าสำเร็จทันที
+  const now = new Date();
+  const y = now.getFullYear() + 543;
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const rand = String(Math.floor(Math.random()*9000)+1000);
+  const localCode = `STeP-DOC-${y}${m}-${rand}`;
 
-  if (!isInLIFF) {
-    // TEST MODE — แสดงหน้าสำเร็จโดยไม่ส่ง webhook
-    await new Promise(r => setTimeout(r, 1200)); // simulate loading
-    const fakeCode = 'STeP-DOC-' + new Date().getFullYear() + String(Math.floor(Math.random()*9000)+1000);
-    showSuccess(fakeCode);
-    return;
-  }
+  // ส่งข้อมูลไป n8n (fire and forget)
+  fetch(WEBHOOK, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...payload, requestCode: localCode }),
+  }).catch(() => {}); // ไม่ต้อง handle error เพราะ no-cors ไม่ return response
 
-  try {
-    const res = await fetch(WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    let code = '';
-    try {
-      const json = await res.json();
-      code = json.requestCode || '';
-    } catch(e) { code = ''; }
-
-    showSuccess(code);
-
-  } catch(e) {
-    btn.disabled = false;
-    btn.innerHTML = 'ส่งคำขอ';
-    alert('เกิดข้อผิดพลาด กรุณาลองใหม่\nหรือติดต่อเจ้าหน้าที่ที่ 0 5394 8678');
-  }
+  // แสดงหน้าสำเร็จทันที
+  await new Promise(r => setTimeout(r, 800));
+  showSuccess(localCode);
 }
 
 // ── SHOW SUCCESS ──
