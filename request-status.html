@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ตรวจสอบสถานะ — STeP CMU</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1A3A5C; --navy2: #2E6DA4; --tint: #EBF3FB;
+  --w: #FFFFFF; --bg: #F8F9FA; --border: #CED4DA;
+  --text: #212529; --sub: #6C757D; --r: 8px;
+  --font: 'Sarabun', sans-serif;
+  --green: #1E8449; --orange: #E67E22; --red: #C0392B; --gray: #95A5A6;
+}
+html { font-size: 17px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { background: var(--navy); padding: 22px 18px 30px; position: relative; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: var(--bg); border-radius: 16px 16px 0 0; }
+.header h1 { color: var(--w); font-size: 23px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
+.header p { color: #90BEE0; font-size: 14px; }
+
+.form-body { padding: 20px 18px; }
+.sec-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--tint); }
+
+.field { margin-bottom: 18px; }
+label { display: block; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+input {
+  width: 100%; background: var(--w); border: 2px solid var(--border);
+  border-radius: var(--r); padding: 13px 14px; font-family: var(--font);
+  font-size: 16px; color: var(--text); outline: none;
+  transition: border-color .2s; -webkit-appearance: none;
+}
+input:focus { border-color: var(--navy2); }
+input.err { border-color: var(--red); background: #FFF5F5; }
+.emsg { font-size: 13px; color: var(--red); margin-top: 5px; display: none; }
+
+.btn-search {
+  width: 100%; height: 54px; background: var(--navy); border: none;
+  border-radius: var(--r); font-family: var(--font); font-size: 17px;
+  font-weight: 700; color: var(--w); cursor: pointer; margin-top: 4px;
+}
+.btn-search:disabled { opacity: .6; cursor: not-allowed; }
+
+/* RESULT */
+#result { display: none; margin-top: 24px; }
+
+.req-card {
+  background: var(--w); border-radius: var(--r);
+  border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px;
+}
+.req-card-head {
+  background: var(--navy); padding: 16px 18px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.req-code { color: var(--w); font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.req-date { color: #90BEE0; font-size: 12px; margin-top: 3px; }
+.status-badge {
+  padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 700;
+  white-space: nowrap; margin-left: 8px; flex-shrink: 0;
+}
+.req-info { padding: 14px 18px; }
+.req-row { display: flex; gap: 8px; padding: 5px 0; font-size: 14px; border-bottom: 1px solid var(--bg); }
+.req-row:last-child { border-bottom: none; }
+.req-key { color: var(--sub); min-width: 90px; flex-shrink: 0; }
+.req-val { color: var(--text); font-weight: 500; }
+
+/* TIMELINE */
+.timeline-title {
+  font-size: 13px; font-weight: 700; color: var(--sub);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin: 20px 0 14px; padding: 0 2px;
+}
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before {
+  content: ''; position: absolute; left: 10px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--border);
+}
+.titem { position: relative; margin-bottom: 20px; }
+.titem:last-child { margin-bottom: 0; }
+.tdot {
+  position: absolute; left: -24px; top: 3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--bg);
+  transition: all .3s;
+}
+.titem.done .tdot { background: var(--green); border-color: var(--green); }
+.titem.active .tdot { background: var(--navy2); border-color: var(--navy2); box-shadow: 0 0 0 3px rgba(46,134,193,0.2); }
+.titem.pending .tdot { background: var(--bg); border-color: var(--border); }
+.tlabel { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.titem.pending .tlabel { color: var(--sub); font-weight: 400; }
+.titem.active .tlabel { color: var(--navy2); }
+.tsub { font-size: 13px; color: var(--sub); margin-top: 3px; }
+.titem.active .tsub { color: var(--navy2); }
+
+/* NOT FOUND */
+.not-found {
+  background: var(--w); border-radius: var(--r); padding: 32px 18px;
+  text-align: center; border: 1px solid var(--border);
+}
+.not-found h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.not-found p { font-size: 14px; color: var(--sub); line-height: 1.6; }
+
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: var(--w); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ตรวจสอบสถานะ</h1>
+  <p>อุทยานวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเชียงใหม่</p>
+</div>
+
+<div class="form-body">
+  <div class="sec-title">ค้นหาคำขอของท่าน</div>
+
+  <div class="field">
+    <label>หมายเลขคำขอ</label>
+    <input type="text" id="f_code" placeholder="เช่น STeP-DOC-256905-1234" style="text-transform:uppercase;">
+    <div class="emsg" id="e_code">กรุณากรอกหมายเลขคำขอ</div>
+  </div>
+
+  <button class="btn-search" id="searchBtn" onclick="doSearch()">ค้นหาสถานะ</button>
+
+  <!-- RESULT AREA -->
+  <div id="result"></div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+const LIFF_ID = '2009976605-TKtdEveT';
+let lineUid = '';
+
+(async function() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (liff.isLoggedIn()) {
+      const p = await liff.getProfile();
+      lineUid = p.userId;
+    }
+  } catch(e) {}
+})();
+
+// Status steps definition
+const ALL_STEPS = [
+  { key: 'PENDING_ADMIN',               label: 'รับคำขอแล้ว',                 sub: 'ระบบได้รับคำขอและรอผู้ดูแลอนุมัติ' },
+  { key: 'FILE_UPLOADED',               label: 'แอดมินอัปโหลดเอกสารแล้ว',     sub: 'เจ้าหน้าที่เตรียมไฟล์จริงไว้ในระบบแล้ว' },
+  { key: 'DELIVERED',                   label: 'ส่งเอกสารให้ท่านแล้ว',        sub: 'กรุณากดดาวน์โหลดและยืนยันรับเอกสาร' },
+  { key: 'RECEIVED',                    label: 'ยืนยันรับเอกสารแล้ว',          sub: 'ระบบบันทึกการรับเอกสารเรียบร้อยแล้ว' },
+  { key: 'WAITING_USER_UPLOAD',         label: 'รอท่านส่งแบบกลับ',             sub: 'กรุณาส่งแบบที่ปรับปรุงแล้วกลับมา' },
+  { key: 'UNDER_REVIEW',                label: 'วิศวกร/สถาปนิกกำลังตรวจสอบ',  sub: 'ระยะเวลาดำเนินการประมาณ 7 วันทำการ' },
+  { key: 'NEEDS_REVISION',              label: 'ต้องแก้ไขเพิ่มเติม',           sub: 'กรุณาตรวจสอบรายละเอียดและส่งแบบใหม่' },
+  { key: 'PASSED',                      label: 'ผ่านการตรวจสอบแล้ว',           sub: 'ดำเนินการเสร็จสิ้น' },
+  { key: 'CLOSED',                      label: 'ปิดคำขอ',                      sub: 'กระบวนการเสร็จสมบูรณ์' },
+];
+
+const STATUS_COLOR = {
+  'PENDING_ADMIN':              { bg: '#EBF5FB', color: '#2E6DA4' },
+  'FILE_UPLOADED':              { bg: '#FEF9E7', color: '#B7770D' },
+  'DELIVERED':                  { bg: '#EBF5FB', color: '#2E6DA4' },
+  'RECEIVED':                   { bg: '#EAFAF1', color: '#1E8449' },
+  'WAITING_USER_UPLOAD':        { bg: '#FEF9E7', color: '#B7770D' },
+  'UNDER_REVIEW':               { bg: '#FEF9E7', color: '#B7770D' },
+  'NEEDS_REVISION':             { bg: '#FDEDEC', color: '#C0392B' },
+  'PASSED':                     { bg: '#EAFAF1', color: '#1E8449' },
+  'CLOSED':                     { bg: '#EAFAF1', color: '#1E8449' },
+};
+
+const LEGACY_STATUS_MAP = {
+  'รับคำขอแล้ว': 'PENDING_ADMIN',
+  'กำลังจัดเตรียมเอกสาร': 'FILE_UPLOADED',
+  'APPROVED': 'FILE_UPLOADED',
+  'อนุมัติคำขอแล้ว': 'FILE_UPLOADED',
+  'ส่งเอกสารให้ผู้ขอแล้ว': 'DELIVERED',
+  'รอผู้ขอส่งแบบกลับ': 'WAITING_USER_UPLOAD',
+  'รอตรวจโดยวิศวกร/สถาปนิก': 'UNDER_REVIEW',
+  'ต้องแก้ไข': 'NEEDS_REVISION',
+  'ผ่านการตรวจสอบ': 'PASSED',
+  'ปิดคำขอ': 'CLOSED',
+};
+
+function normalizeStatus(status) {
+  return LEGACY_STATUS_MAP[status] || status;
+}
+
+function displayStatus(status) {
+  const normalized = normalizeStatus(status);
+  const found = ALL_STEPS.find((step) => step.key === normalized);
+  return found ? found.label : normalized || '-';
+}
+
+function getStepState(stepKey, currentStatus) {
+  const stepIdx = ALL_STEPS.findIndex(s => s.key === stepKey);
+  const currentIdx = ALL_STEPS.findIndex(s => s.key === currentStatus);
+
+  if (currentStatus === 'NEEDS_REVISION' && stepKey === 'NEEDS_REVISION') return 'active';
+  if (currentStatus === 'NEEDS_REVISION' && stepIdx < 6) return 'done';
+  if (currentStatus === 'NEEDS_REVISION' && stepIdx > 6) return 'pending';
+  if (currentIdx === -1) return 'pending';
+
+  if (stepIdx < currentIdx) return 'done';
+  if (stepIdx === currentIdx) return 'active';
+  return 'pending';
+}
+
+async function doSearch() {
+  const code = document.getElementById('f_code').value.trim().toUpperCase();
+  const em = document.getElementById('e_code');
+
+  if (!code) { document.getElementById('f_code').classList.add('err'); em.style.display = 'block'; return; }
+  document.getElementById('f_code').classList.remove('err'); em.style.display = 'none';
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังค้นหา...';
+
+  try {
+    const res = await fetch('/api/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requestCode: code, lineUserId: lineUid }),
+    });
+    const data = await res.json();
+    renderResult(data, code);
+  } catch(e) {
+    renderResult(null, code);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'ค้นหาสถานะ';
+}
+
+function renderResult(data, code) {
+  const el = document.getElementById('result');
+  el.style.display = 'block';
+
+  if (!data || !data.found) {
+    el.innerHTML = `
+      <div class="not-found">
+        <h3>ไม่พบหมายเลขคำขอ</h3>
+        <p>ไม่พบข้อมูลคำขอ <strong>${code}</strong><br>
+        กรุณาตรวจสอบหมายเลขคำขออีกครั้ง<br>
+        หรือติดต่อ 0 5394 8678</p>
+      </div>`;
+    return;
+  }
+
+  const r = data.request;
+  const normalizedStatus = normalizeStatus(r.status);
+  const statusStyle = STATUS_COLOR[normalizedStatus] || { bg: '#F2F3F4', color: '#6C757D' };
+  const createdDate = r.created_at ? new Date(r.created_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+  const updatedDate = r.updated_at ? new Date(r.updated_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+
+  const stepsToShow = ALL_STEPS.filter(s => s.key !== 'NEEDS_REVISION' || normalizedStatus === 'NEEDS_REVISION');
+
+  const timelineHTML = stepsToShow.map(step => {
+    const state = getStepState(step.key, normalizedStatus);
+    const icon = state === 'done' ? '✓' : state === 'active' ? '●' : '';
+    return `
+      <div class="titem ${state}">
+        <div class="tdot"></div>
+        <div class="tlabel">${step.label}</div>
+        ${state === 'active' ? `<div class="tsub">${step.sub}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="req-card">
+      <div class="req-card-head">
+        <div>
+        <div class="req-code">${r.request_code || code}</div>
+        <div class="req-date">ยื่นเมื่อ ${createdDate}</div>
+      </div>
+      <div class="status-badge" style="background:${statusStyle.bg};color:${statusStyle.color}">
+          ${displayStatus(r.status)}
+        </div>
+      </div>
+      <div class="req-info">
+        <div class="req-row"><span class="req-key">ผู้ขอ</span><span class="req-val">${r.requester_name || '-'}</span></div>
+        <div class="req-row"><span class="req-key">ประเภท</span><span class="req-val">${r.document_type || '-'}</span></div>
+        <div class="req-row"><span class="req-key">พื้นที่</span><span class="req-val">${r.area || '-'}</span></div>
+        <div class="req-row"><span class="req-key">เลขห้อง</span><span class="req-val">${r.room_number || r.roomNumber || r.objective || '-'}</span></div>
+        <div class="req-row"><span class="req-key">ไฟล์เอกสาร</span><span class="req-val">${r.admin_file_name || r.pdf_file_name || '-'}</span></div>
+        <div class="req-row"><span class="req-key">อัปเดตล่าสุด</span><span class="req-val">${updatedDate}</span></div>
+      </div>
+    </div>
+
+    <div class="timeline-title">ความคืบหน้า</div>
+    <div class="timeline">${timelineHTML}</div>
+  `;
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Enter key
+document.getElementById('f_code').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ส่งเอกสารกลับ — STeP CMU</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1A3A5C; --navy2: #2E6DA4; --tint: #EBF3FB;
+  --w: #FFFFFF; --bg: #F8F9FA; --border: #CED4DA;
+  --text: #212529; --sub: #6C757D; --r: 8px;
+  --font: 'Sarabun', sans-serif;
+}
+html { font-size: 17px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-text-size-adjust: 100%; }
+
+.header { background: var(--navy); padding: 22px 18px 30px; position: relative; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: var(--bg); border-radius: 16px 16px 0 0; }
+.header h1 { color: var(--w); font-size: 23px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
+.header p { color: #90BEE0; font-size: 14px; }
+
+.form-body { padding: 20px 18px; }
+.sec-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--tint); }
+.field { margin-bottom: 18px; }
+label { display: block; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+label .req { color: #C0392B; margin-left: 2px; }
+label .opt { font-weight: 400; color: var(--sub); }
+
+input[type=text], textarea, select {
+  width: 100%; background: var(--w); border: 2px solid var(--border);
+  border-radius: var(--r); padding: 13px 14px; font-family: var(--font);
+  font-size: 16px; color: var(--text); outline: none;
+  transition: border-color .2s; -webkit-appearance: none; line-height: 1.4;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--navy2); }
+input.err, textarea.err { border-color: #C0392B; background: #FFF5F5; }
+textarea { resize: none; height: 90px; }
+.emsg { font-size: 13px; color: #C0392B; margin-top: 5px; display: none; font-weight: 500; }
+
+/* FILE UPLOAD */
+.file-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--r);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--w);
+  position: relative;
+}
+.file-area:hover, .file-area.drag { border-color: var(--navy2); background: var(--tint); }
+.file-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.file-icon { font-size: 36px; margin-bottom: 8px; }
+.file-text { font-size: 15px; color: var(--sub); }
+.file-text strong { color: var(--navy); }
+.file-hint { font-size: 12px; color: var(--sub); margin-top: 4px; }
+.file-list { margin-top: 12px; }
+.file-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--tint); border: 1px solid #B8D4EC;
+  border-radius: 6px; padding: 10px 12px; margin-top: 8px;
+}
+.file-item .fname { flex: 1; font-size: 14px; color: var(--navy); font-weight: 500; }
+.file-item .fsize { font-size: 12px; color: var(--sub); }
+.file-item .fdel { background: none; border: none; color: #C0392B; cursor: pointer; font-size: 18px; padding: 0 4px; }
+
+/* BUTTONS */
+.btn-submit {
+  width: 100%; height: 54px; background: var(--navy); border: none;
+  border-radius: var(--r); font-family: var(--font); font-size: 17px;
+  font-weight: 700; color: var(--w); cursor: pointer; margin-top: 24px;
+  padding-bottom: 16px; margin-bottom: 16px;
+}
+.btn-submit:disabled { opacity: .55; cursor: not-allowed; }
+
+/* SUCCESS */
+#successScreen { display: none; }
+#successScreen.show { display: block; }
+.suc-top { background: var(--navy); padding: 32px 18px; text-align: center; }
+.suc-top h2 { color: var(--w); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.suc-top p { color: #90BEE0; font-size: 15px; line-height: 1.6; }
+.code-box { background: var(--w); padding: 20px 18px; border-bottom: 1px solid var(--border); text-align: center; }
+.code-lbl { font-size: 12px; color: var(--sub); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+.code-val { font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: 1px; }
+.info-box { background: var(--w); padding: 20px 18px; }
+.info-title { font-size: 13px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+.iitem { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--bg); align-items: flex-start; }
+.iitem:last-child { border-bottom: none; }
+.inum { width: 30px; height: 30px; background: var(--navy); color: var(--w); border-radius: 50%; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.itxt { font-size: 15px; color: var(--text); line-height: 1.55; padding-top: 4px; }
+.close-wrap { padding: 16px 18px 40px; background: var(--w); }
+.close-btn { width: 100%; height: 54px; background: var(--navy); color: var(--w); border: none; border-radius: var(--r); font-family: var(--font); font-size: 17px; font-weight: 700; cursor: pointer; }
+
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: var(--w); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.info-banner { background: var(--tint); border: 1.5px solid #B8D4EC; border-radius: var(--r); padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--navy); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ส่งเอกสารกลับ</h1>
+  <p>อุทยานวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเชียงใหม่</p>
+</div>
+
+<div class="form-body" id="formBody">
+  <div class="sec-title">อัปโหลดเอกสารที่แก้ไขแล้ว</div>
+
+  <div class="info-banner">
+    กรุณาส่งแบบแปลนที่ปรับปรุงตามวัตถุประสงค์โครงการแล้ว พร้อมระบุหมายเลขคำขอที่ได้รับ
+  </div>
+
+  <div class="field">
+    <label>หมายเลขคำขอ <span class="req">*</span></label>
+    <input type="text" id="f_code" placeholder="เช่น STeP-DOC-256905-1234">
+    <div class="emsg" id="e_code">กรุณากรอกหมายเลขคำขอ</div>
+  </div>
+
+  <div class="field">
+    <label>ชื่อ-นามสกุล <span class="req">*</span></label>
+    <input type="text" id="f_name" placeholder="กรอกชื่อ-นามสกุล">
+    <div class="emsg" id="e_name">กรุณากรอกชื่อ-นามสกุล</div>
+  </div>
+
+  <div class="field">
+    <label>อีเมล <span class="req">*</span></label>
+    <input type="text" id="f_email" placeholder="อีเมลที่ใช้ลงทะเบียน">
+    <div class="emsg" id="e_email">กรุณากรอกอีเมล</div>
+  </div>
+
+  <div class="field">
+    <label>แนบไฟล์เอกสาร <span class="req">*</span></label>
+    <div class="file-area" id="fileArea">
+      <input type="file" id="fileInput" multiple accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.zip">
+      <div class="file-icon">📎</div>
+      <div class="file-text"><strong>กดเพื่อเลือกไฟล์</strong> หรือลากมาวางที่นี่</div>
+      <div class="file-hint">รองรับ PDF, DWG, DXF, JPG, PNG, ZIP (สูงสุด 50MB ต่อไฟล์)</div>
+    </div>
+    <div class="file-list" id="fileList"></div>
+    <div class="emsg" id="e_file">กรุณาแนบไฟล์อย่างน้อย 1 ไฟล์</div>
+  </div>
+
+  <div class="field">
+    <label>หมายเหตุ <span class="opt">(ถ้ามี)</span></label>
+    <textarea id="f_note" placeholder="รายละเอียดการแก้ไข หรือข้อความถึงเจ้าหน้าที่" style="height:80px;"></textarea>
+  </div>
+
+  <button class="btn-submit" id="submitBtn" onclick="doSubmit()" style="margin-top:8px;margin-bottom:32px;">ส่งเอกสาร</button>
+</div>
+
+<!-- SUCCESS -->
+<div id="successScreen">
+  <div class="suc-top">
+    <h2>ส่งเอกสารเรียบร้อยแล้ว</h2>
+    <p>เจ้าหน้าที่จะตรวจสอบและแจ้งผล<br>ภายใน 7 วันทำการ</p>
+  </div>
+  <div class="code-box">
+    <div class="code-lbl">หมายเลขคำขอ</div>
+    <div class="code-val" id="codeDisplay">—</div>
+  </div>
+  <div class="info-box">
+    <div class="info-title">ขั้นตอนต่อไป</div>
+    <div class="iitem"><div class="inum">1</div><div class="itxt">วิศวกร/สถาปนิกจะตรวจสอบเอกสารภายใน <strong>7 วันทำการ</strong></div></div>
+    <div class="iitem"><div class="inum">2</div><div class="itxt">ระบบจะแจ้งผลการตรวจสอบผ่าน <strong>LINE</strong> และ <strong>อีเมล</strong></div></div>
+    <div class="iitem"><div class="inum">3</div><div class="itxt">หากต้องแก้ไขเพิ่มเติม จะได้รับแจ้งรายละเอียดพร้อมปุ่มส่งกลับอีกครั้ง</div></div>
+  </div>
+  <div class="close-wrap">
+    <button class="close-btn" onclick="closePage()">ปิดหน้าต่าง</button>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+const LIFF_ID = '2009976605-TKtdEveT';
+const UPLOAD_WEBHOOK = '/api/upload';
+
+let lineUid = 'web-' + Date.now();
+let selectedFiles = [];
+
+// Init LIFF
+(async function() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) { liff.login(); return; }
+    const p = await liff.getProfile();
+    lineUid = p.userId;
+    if (p.displayName) document.getElementById('f_name').value = p.displayName;
+  } catch(e) {}
+})();
+
+// File handling
+const fileInput = document.getElementById('fileInput');
+const fileArea = document.getElementById('fileArea');
+const fileList = document.getElementById('fileList');
+
+fileInput.addEventListener('change', () => addFiles(fileInput.files));
+
+fileArea.addEventListener('dragover', e => { e.preventDefault(); fileArea.classList.add('drag'); });
+fileArea.addEventListener('dragleave', () => fileArea.classList.remove('drag'));
+fileArea.addEventListener('drop', e => {
+  e.preventDefault();
+  fileArea.classList.remove('drag');
+  addFiles(e.dataTransfer.files);
+});
+
+function addFiles(files) {
+  [...files].forEach(f => {
+    if (!selectedFiles.find(x => x.name === f.name && x.size === f.size)) {
+      selectedFiles.push(f);
+    }
+  });
+  renderFileList();
+  if (selectedFiles.length > 0) document.getElementById('e_file').style.display = 'none';
+}
+
+function removeFile(idx) {
+  selectedFiles.splice(idx, 1);
+  renderFileList();
+}
+
+function renderFileList() {
+  fileList.innerHTML = selectedFiles.map((f, i) => `
+    <div class="file-item">
+      <span class="fname">${f.name}</span>
+      <span class="fsize">${(f.size/1024/1024).toFixed(1)} MB</span>
+      <button class="fdel" onclick="removeFile(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function fmt(bytes) { return (bytes/1024/1024).toFixed(1) + ' MB'; }
+
+// Validate
+function isValid() {
+  let ok = true;
+  const checks = [
+    { id: 'f_code', eid: 'e_code', fn: v => v.trim().length > 3 },
+    { id: 'f_name', eid: 'e_name', fn: v => v.trim().length > 1 },
+    { id: 'f_email', eid: 'e_email', fn: v => v.trim().length > 3 },
+  ];
+  checks.forEach(({id, eid, fn}) => {
+    const el = document.getElementById(id);
+    const em = document.getElementById(eid);
+    if (!fn(el.value)) { el.classList.add('err'); em.style.display = 'block'; ok = false; }
+    else { el.classList.remove('err'); em.style.display = 'none'; }
+  });
+  if (selectedFiles.length === 0) {
+    document.getElementById('e_file').style.display = 'block';
+    ok = false;
+  }
+  return ok;
+}
+
+// Submit
+async function doSubmit() {
+  if (!isValid()) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังส่ง...';
+
+  const code = document.getElementById('f_code').value.trim();
+
+  // Convert files to base64
+  const filesData = await Promise.all(selectedFiles.map(f => new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = e => res({ name: f.name, size: f.size, type: f.type, data: e.target.result.split(',')[1] });
+    reader.onerror = rej;
+    reader.readAsDataURL(f);
+  })));
+
+  const payload = {
+    lineUserId: lineUid,
+    requestCode: code,
+    requesterName: document.getElementById('f_name').value.trim(),
+    email: document.getElementById('f_email').value.trim(),
+    note: document.getElementById('f_note').value.trim(),
+    files: filesData,
+    uploadedAt: new Date().toISOString(),
+  };
+
+  try {
+    await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    showSuccess(code);
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'ส่งเอกสาร';
+    alert('เกิดข้อผิดพลาด กรุณาลองใหม่\nหรือติดต่อ 0 5394 8678');
+  }
+}
+
+function showSuccess(code) {
+  document.querySelector('.header').style.display = 'none';
+  document.getElementById('formBody').style.display = 'none';
+  const s = document.getElementById('successScreen');
+  s.style.display = 'block';
+  document.getElementById('codeDisplay').textContent = code;
+  window.scrollTo(0, 0);
+}
+
+function closePage() {
+  try { liff.closeWindow(); } catch(e) { window.close(); }
+}
+</script>
+</body>
+</html>

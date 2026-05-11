@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>อนุมัติคำขอ — STeP CMU Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --navy: #1A3A5C; --navy2: #2E6DA4; --tint: #EBF3FB; --w: #FFFFFF; --bg: #F8F9FA; --border: #CED4DA; --text: #212529; --sub: #6C757D; --green: #1E8449; --amber: #B9770E; --red: #C0392B; --r: 8px; --font: 'Sarabun', sans-serif; }
+html { font-size: 17px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { background: var(--navy); padding: 22px 18px 30px; position: relative; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: var(--bg); border-radius: 16px 16px 0 0; }
+.header h1 { color: var(--w); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.header p { color: #90BEE0; font-size: 14px; }
+
+.body { padding: 20px 18px; }
+.card { background: var(--w); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+.card-head { background: var(--navy); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+.card-code { color: var(--w); font-size: 16px; font-weight: 700; letter-spacing: .5px; }
+.card-date { color: #90BEE0; font-size: 12px; }
+.card-body { padding: 14px 16px; }
+.card-subtitle { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.row { display: flex; gap: 8px; padding: 5px 0; font-size: 14px; border-bottom: 1px solid var(--bg); }
+.row:last-child { border-bottom: none; }
+.row-k { color: var(--sub); min-width: 85px; flex-shrink: 0; }
+.row-v { color: var(--text); font-weight: 500; }
+
+.note-box {
+  background: #FEF9E7; border: 1px solid #F9E79F; border-radius: var(--r);
+  padding: 12px 14px; font-size: 14px; color: #7D6608; line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.field { margin-bottom: 14px; }
+label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 7px; color: var(--text); }
+input[type=file] { display: none; }
+
+.file-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--r);
+  padding: 22px 16px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--w);
+  transition: border-color .2s, background .2s;
+}
+.file-area:hover, .file-area.drag {
+  border-color: var(--navy2);
+  background: var(--tint);
+}
+.file-icon { font-size: 34px; margin-bottom: 8px; }
+.file-text { font-size: 15px; color: var(--sub); }
+.file-text strong { color: var(--navy); }
+.file-hint { font-size: 12px; color: var(--sub); margin-top: 5px; }
+
+.file-chip, .file-existing {
+  margin-top: 10px;
+  border-radius: var(--r);
+  border: 1px solid #B8D4EC;
+  background: var(--tint);
+  padding: 12px 14px;
+}
+.file-name { color: var(--navy); font-size: 14px; font-weight: 700; }
+.file-meta { color: var(--sub); font-size: 12px; margin-top: 4px; }
+.file-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--navy2);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-row { display: flex; flex-direction: column; gap: 10px; }
+.btn-upload, .btn-approve {
+  width: 100%; height: 50px; border: none; border-radius: var(--r);
+  font-family: var(--font); font-size: 16px; font-weight: 700; color: var(--w);
+  cursor: pointer;
+}
+.btn-upload { background: var(--navy); }
+.btn-approve { background: var(--green); }
+.btn-upload:disabled, .btn-approve:disabled { opacity: .6; cursor: not-allowed; }
+
+.status-badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+
+#loading { text-align: center; padding: 40px; color: var(--sub); font-size: 16px; }
+#result { display: none; }
+.success-msg { background: #EAFAF1; border: 1px solid #1E8449; border-radius: var(--r); padding: 16px; text-align: center; margin-top: 16px; }
+.success-msg h3 { color: var(--green); margin-bottom: 4px; }
+.success-msg p { color: var(--sub); font-size: 14px; }
+.alert-msg { border-radius: var(--r); padding: 12px 14px; font-size: 14px; margin-top: 12px; display: none; }
+.alert-msg.info { background: #EBF5FB; color: var(--navy2); border: 1px solid #B8D4EC; }
+.alert-msg.warn { background: #FEF9E7; color: var(--amber); border: 1px solid #F9E79F; }
+.alert-msg.error { background: #FDEDEC; color: var(--red); border: 1px solid #F5B7B1; }
+
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>อนุมัติคำขอเอกสาร</h1>
+  <p>STeP CMU Admin Panel</p>
+</div>
+
+<div class="body">
+  <div id="loading">กำลังโหลดข้อมูล...</div>
+
+  <div id="result">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-code" id="dCode">—</span>
+        <span class="card-date" id="dDate">—</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="row-k">ผู้ขอ</span><span class="row-v" id="dName">—</span></div>
+        <div class="row"><span class="row-k">หน่วยงาน</span><span class="row-v" id="dOrg">—</span></div>
+        <div class="row"><span class="row-k">โทรศัพท์</span><span class="row-v" id="dTel">—</span></div>
+        <div class="row"><span class="row-k">อีเมล</span><span class="row-v" id="dEmail">—</span></div>
+        <div class="row"><span class="row-k">ประเภท</span><span class="row-v" id="dType">—</span></div>
+        <div class="row"><span class="row-k">พื้นที่</span><span class="row-v" id="dArea">—</span></div>
+        <div class="row"><span class="row-k">อาคาร</span><span class="row-v" id="dBuilding">—</span></div>
+        <div class="row"><span class="row-k">ชั้น</span><span class="row-v" id="dFloor">—</span></div>
+        <div class="row"><span class="row-k">เลขห้อง</span><span class="row-v" id="dRoom">—</span></div>
+        <div class="row"><span class="row-k">สถานะ</span><span class="row-v" id="dStatus">—</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="card-subtitle">อัปโหลดเอกสารจริงสำหรับผู้ขอ</div>
+        <div class="note-box">
+          ขั้นตอนรอบนี้คือให้เจ้าหน้าที่อัปโหลดไฟล์จริงก่อน จากนั้นค่อยกดอนุมัติและส่งลิงก์กลับให้ผู้ใช้ทาง LINE โดยระบบจะบันทึกชื่อไฟล์และสถานะลงฐานข้อมูลกลาง
+        </div>
+
+        <div class="field">
+          <label for="adminFileInput">ไฟล์เอกสาร</label>
+          <label class="file-area" id="fileArea" for="adminFileInput">
+            <div class="file-icon">📄</div>
+            <div class="file-text"><strong>กดเพื่อเลือกไฟล์</strong> สำหรับอัปโหลดเข้า Google Drive</div>
+            <div class="file-hint">รองรับ PDF, DWG, DXF, ZIP, JPG, PNG หรือไฟล์จริงที่ใช้ส่งมอบ</div>
+          </label>
+          <input type="file" id="adminFileInput" accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+          <div class="file-chip" id="selectedFileBox" style="display:none;">
+            <div class="file-name" id="selectedFileName">—</div>
+            <div class="file-meta" id="selectedFileMeta">—</div>
+          </div>
+          <div class="file-existing" id="existingFileBox" style="display:none;">
+            <div class="file-name" id="existingFileName">—</div>
+            <div class="file-meta" id="existingFileMeta">—</div>
+            <a class="file-link" id="existingFileLink" href="#" target="_blank" rel="noopener" style="display:none;">เปิดลิงก์เอกสารที่อัปโหลดไว้</a>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-upload" id="uploadBtn" onclick="doUpload()" disabled>อัปโหลดเอกสารเข้า Google Drive</button>
+          <button class="btn-approve" id="approveBtn" onclick="doApprove()" disabled>อนุมัติและส่งเอกสารให้ผู้ขอ</button>
+        </div>
+
+        <div class="alert-msg info" id="infoMsg"></div>
+        <div class="alert-msg warn" id="warnMsg"></div>
+        <div class="alert-msg error" id="errorMsg"></div>
+      </div>
+    </div>
+
+    <div class="success-msg" id="successMsg" style="display:none;">
+      <h3>อนุมัติเรียบร้อยแล้ว</h3>
+      <p>ระบบส่งเอกสารให้ผู้ขอทาง LINE แล้ว</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+const LIFF_ID = '2009976605-TKtdEveT';
+const DEFAULT_ADMIN_USER_IDS = (window.STEP_ADMIN_USER_IDS || ['U863fe878279ef43dba1837ef16148e5d']).filter(Boolean);
+let adminAllowlist = [...DEFAULT_ADMIN_USER_IDS];
+const params = new URLSearchParams(window.location.search);
+const code = params.get('code') || '';
+let adminUserId = '';
+let adminDisplayName = '';
+let currentRequest = null;
+let selectedFile = null;
+
+function displayStatus(status) {
+  const map = {
+    PENDING_ADMIN: 'รับคำขอแล้ว',
+    FILE_UPLOADED: 'อัปโหลดเอกสารแล้ว',
+    APPROVED: 'อนุมัติคำขอแล้ว',
+    DELIVERED: 'ส่งเอกสารให้ผู้ขอแล้ว',
+    RECEIVED: 'ผู้ใช้ยืนยันรับแล้ว',
+    WAITING_USER_UPLOAD: 'รอผู้ขอส่งแบบกลับ',
+    UNDER_REVIEW: 'รอตรวจโดยวิศวกร/สถาปนิก',
+    NEEDS_REVISION: 'ต้องแก้ไข',
+    PASSED: 'ผ่านการตรวจสอบ',
+    CLOSED: 'ปิดคำขอ',
+  };
+  return map[status] || status || '-';
+}
+
+function normalizeStatus(status) {
+  if (status === 'กำลังจัดเตรียมเอกสาร' || status === 'APPROVED') return 'FILE_UPLOADED';
+  return status || '';
+}
+
+function isApprovableStatus(status) {
+  return ['PENDING_ADMIN', 'FILE_UPLOADED', 'APPROVED', 'รับคำขอแล้ว', 'กำลังจัดเตรียมเอกสาร', 'อนุมัติคำขอแล้ว'].includes(status);
+}
+
+function hasUploadedFile(request = {}) {
+  return Boolean(
+    request.drive_file_url ||
+    request.file_download_url ||
+    request.drive_file_id ||
+    request.admin_file_name
+  );
+}
+
+function formatBytes(bytes = 0) {
+  if (!bytes) return 'ขนาดไฟล์ไม่ระบุ';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let size = Number(bytes);
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+  return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function clearAlerts() {
+  ['infoMsg', 'warnMsg', 'errorMsg'].forEach((id) => {
+    const el = document.getElementById(id);
+    el.style.display = 'none';
+    el.textContent = '';
+  });
+}
+
+function showAlert(id, message) {
+  clearAlerts();
+  const el = document.getElementById(id);
+  el.textContent = message;
+  el.style.display = 'block';
+}
+
+function refreshFileBoxes() {
+  const selectedBox = document.getElementById('selectedFileBox');
+  const existingBox = document.getElementById('existingFileBox');
+  const existingLink = document.getElementById('existingFileLink');
+
+  if (selectedFile) {
+    selectedBox.style.display = 'block';
+    document.getElementById('selectedFileName').textContent = selectedFile.name;
+    document.getElementById('selectedFileMeta').textContent = `${selectedFile.type || 'ไม่ระบุชนิดไฟล์'} • ${formatBytes(selectedFile.size)}`;
+  } else {
+    selectedBox.style.display = 'none';
+  }
+
+  if (currentRequest && hasUploadedFile(currentRequest)) {
+    existingBox.style.display = 'block';
+    document.getElementById('existingFileName').textContent = currentRequest.admin_file_name || currentRequest.pdf_file_name || 'มีไฟล์เอกสารในระบบแล้ว';
+    document.getElementById('existingFileMeta').textContent = currentRequest.drive_file_id
+      ? `ไฟล์ถูกผูกกับ Google Drive แล้ว (${currentRequest.drive_file_id})`
+      : 'ไฟล์อัปโหลดแล้วและพร้อมสำหรับการส่งกลับผู้ใช้';
+    const url = currentRequest.file_download_url || currentRequest.drive_file_url || '';
+    existingLink.style.display = url ? 'inline-block' : 'none';
+    existingLink.href = url || '#';
+  } else {
+    existingBox.style.display = 'none';
+    existingLink.style.display = 'none';
+    existingLink.href = '#';
+  }
+}
+
+function refreshActionState() {
+  const uploadBtn = document.getElementById('uploadBtn');
+  const approveBtn = document.getElementById('approveBtn');
+
+  const found = Boolean(currentRequest && (currentRequest.request_code || code));
+  uploadBtn.disabled = !found || !selectedFile;
+
+  if (!found) {
+    approveBtn.disabled = true;
+    approveBtn.textContent = 'ไม่พบคำขอ จึงยังอนุมัติไม่ได้';
+    return;
+  }
+
+  if (!isApprovableStatus(currentRequest.status || '')) {
+    approveBtn.disabled = true;
+    approveBtn.textContent = 'คำขอนี้ไม่อยู่ในสถานะที่อนุมัติได้';
+    return;
+  }
+
+  if (!hasUploadedFile(currentRequest)) {
+    approveBtn.disabled = true;
+    approveBtn.textContent = 'กรุณาอัปโหลดเอกสารก่อนอนุมัติ';
+    return;
+  }
+
+  approveBtn.disabled = false;
+  approveBtn.textContent = 'อนุมัติและส่งเอกสารให้ผู้ขอ';
+}
+
+function fillRequestData(r) {
+  currentRequest = {
+    ...r,
+    status: normalizeStatus(r.status),
+  };
+  document.getElementById('dCode').textContent = r.request_code || code;
+  document.getElementById('dDate').textContent = r.created_at ? new Date(r.created_at).toLocaleDateString('th-TH') : '-';
+  document.getElementById('dName').textContent = r.requester_name || '-';
+  document.getElementById('dOrg').textContent = r.company || '-';
+  document.getElementById('dTel').textContent = r.phone || '-';
+  document.getElementById('dEmail').textContent = r.email || '-';
+  document.getElementById('dType').textContent = r.document_type || '-';
+  document.getElementById('dArea').textContent = r.area || '-';
+  document.getElementById('dBuilding').textContent = r.building || '-';
+  document.getElementById('dFloor').textContent = r.floor || '-';
+  document.getElementById('dRoom').textContent = r.objective || r.room_number || r.roomNumber || '-';
+  document.getElementById('dStatus').textContent = displayStatus(currentRequest.status);
+  refreshFileBoxes();
+  refreshActionState();
+}
+
+async function readAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(new Error('ไม่สามารถอ่านไฟล์ได้'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function loadAdminConfig() {
+  try {
+    const res = await fetch('/api/admin-config');
+    const data = await res.json();
+    if (res.ok && Array.isArray(data?.adminUserIds) && data.adminUserIds.length > 0) {
+      adminAllowlist = data.adminUserIds;
+    }
+  } catch (error) {}
+}
+
+async function initAdmin() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return false;
+    }
+    const profile = await liff.getProfile();
+    adminUserId = profile.userId || '';
+    adminDisplayName = profile.displayName || '';
+    await loadAdminConfig();
+    if (!adminAllowlist.includes(adminUserId)) {
+      document.getElementById('loading').textContent = 'บัญชีนี้ไม่มีสิทธิ์อนุมัติคำขอ';
+      return false;
+    }
+    return true;
+  } catch (e) {
+    document.getElementById('loading').textContent = 'ไม่สามารถตรวจสอบสิทธิ์ผู้ดูแลได้';
+    return false;
+  }
+}
+
+async function loadRequest() {
+  if (!code) {
+    document.getElementById('loading').textContent = 'ไม่พบหมายเลขคำขอ กรุณาเข้าผ่านลิงก์จาก LINE';
+    return;
+  }
+
+  const ok = await initAdmin();
+  if (!ok) return;
+
+  fetch('/api/get-request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requestCode: code, adminUserId })
+  })
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+
+      if (data && data.found) {
+        fillRequestData(data.request);
+        showAlert(
+          hasUploadedFile(currentRequest) ? 'infoMsg' : 'warnMsg',
+          hasUploadedFile(currentRequest)
+            ? 'คำขอนี้มีไฟล์ในระบบแล้ว คุณสามารถตรวจสอบและกดอนุมัติส่งให้ผู้ใช้ได้ทันที'
+            : 'ยังไม่มีไฟล์จริงในระบบ กรุณาอัปโหลดเอกสารก่อนกดอนุมัติ'
+        );
+      } else {
+        document.getElementById('dCode').textContent = code;
+        document.getElementById('dStatus').textContent = 'ไม่พบข้อมูล';
+        currentRequest = null;
+        refreshFileBoxes();
+        refreshActionState();
+        showAlert('errorMsg', 'ไม่พบคำขอนี้ในระบบ จึงยังไม่สามารถอัปโหลดหรืออนุมัติได้');
+      }
+    })
+    .catch(() => {
+      document.getElementById('loading').textContent = 'ไม่สามารถโหลดข้อมูลได้';
+    });
+}
+
+async function doUpload() {
+  if (!currentRequest) {
+    showAlert('errorMsg', 'ไม่พบข้อมูลคำขอ');
+    return;
+  }
+  if (!selectedFile) {
+    showAlert('warnMsg', 'กรุณาเลือกไฟล์ก่อนอัปโหลด');
+    return;
+  }
+
+  const uploadBtn = document.getElementById('uploadBtn');
+  uploadBtn.disabled = true;
+  uploadBtn.innerHTML = '<span class="spinner"></span>กำลังอัปโหลด...';
+  clearAlerts();
+
+  try {
+    const dataUrl = await readAsBase64(selectedFile);
+    const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
+
+    const res = await fetch('/api/admin-upload-file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestCode: code,
+        adminUserId,
+        adminDisplayName,
+        uploadedAt: new Date().toISOString(),
+        file: {
+          name: selectedFile.name,
+          mimeType: selectedFile.type || 'application/octet-stream',
+          size: selectedFile.size,
+          base64,
+        },
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || data?.success === false) throw new Error(data?.error || data?.message || 'upload failed');
+
+    currentRequest = {
+      ...currentRequest,
+      ...(data.request || {}),
+      status: normalizeStatus((data.request && data.request.status) || data.status || 'FILE_UPLOADED'),
+      admin_file_name: (data.request && data.request.admin_file_name) || data.admin_file_name || selectedFile.name,
+      drive_file_id: (data.request && data.request.drive_file_id) || data.drive_file_id || currentRequest.drive_file_id || '',
+      drive_file_url: (data.request && data.request.drive_file_url) || data.drive_file_url || currentRequest.drive_file_url || '',
+      file_download_url: (data.request && data.request.file_download_url) || data.file_download_url || currentRequest.file_download_url || '',
+      updated_at: (data.request && data.request.updated_at) || data.updated_at || new Date().toISOString(),
+    };
+    document.getElementById('dStatus').textContent = displayStatus(currentRequest.status);
+    selectedFile = null;
+    document.getElementById('adminFileInput').value = '';
+    refreshFileBoxes();
+    refreshActionState();
+    showAlert('infoMsg', 'อัปโหลดเอกสารเรียบร้อยแล้ว ตอนนี้สามารถกดอนุมัติและส่งกลับให้ผู้ใช้ได้');
+  } catch (e) {
+    showAlert('errorMsg', e.message || 'อัปโหลดไม่สำเร็จ');
+  } finally {
+    uploadBtn.innerHTML = 'อัปโหลดเอกสารเข้า Google Drive';
+    refreshActionState();
+  }
+}
+
+async function doApprove() {
+  if (!currentRequest) {
+    showAlert('errorMsg', 'ไม่พบข้อมูลคำขอ');
+    return;
+  }
+  if (!hasUploadedFile(currentRequest)) {
+    showAlert('warnMsg', 'กรุณาอัปโหลดเอกสารจริงก่อนกดอนุมัติ');
+    return;
+  }
+
+  const btn = document.getElementById('approveBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังดำเนินการ...';
+  clearAlerts();
+
+  try {
+    const res = await fetch('/api/admin-approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestCode: code,
+        action: 'approve',
+        adminUserId,
+        adminDisplayName,
+        driveFileId: currentRequest.drive_file_id || '',
+        driveFileUrl: currentRequest.drive_file_url || currentRequest.file_download_url || '',
+        adminFileName: currentRequest.admin_file_name || '',
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || data?.success === false) throw new Error(data?.error || data?.message || 'approve failed');
+    btn.style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    currentRequest = {
+      ...currentRequest,
+      ...(data.request || {}),
+      status: 'DELIVERED',
+    };
+    document.getElementById('dStatus').textContent = displayStatus(currentRequest.status);
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'อนุมัติและส่งเอกสารให้ผู้ขอ';
+    showAlert('errorMsg', e.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
+  }
+}
+
+document.getElementById('adminFileInput').addEventListener('change', (event) => {
+  const [file] = event.target.files || [];
+  selectedFile = file || null;
+  refreshFileBoxes();
+  refreshActionState();
+});
+
+const fileArea = document.getElementById('fileArea');
+['dragover', 'dragenter'].forEach((name) => {
+  fileArea.addEventListener(name, (event) => {
+    event.preventDefault();
+    fileArea.classList.add('drag');
+  });
+});
+['dragleave', 'drop'].forEach((name) => {
+  fileArea.addEventListener(name, (event) => {
+    event.preventDefault();
+    fileArea.classList.remove('drag');
+  });
+});
+fileArea.addEventListener('drop', (event) => {
+  const [file] = event.dataTransfer.files || [];
+  selectedFile = file || null;
+  document.getElementById('adminFileInput').files = event.dataTransfer.files;
+  refreshFileBoxes();
+  refreshActionState();
+});
+
+loadRequest();
+</script>
+</body>
+</html>

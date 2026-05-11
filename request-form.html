@@ -175,14 +175,30 @@ textarea { resize: none; height: 90px; }
       <div class="emsg" id="e_doc">กรุณาเลือกประเภทเอกสารอย่างน้อย 1 รายการ</div>
     </div>
     <div class="field">
-      <label>พื้นที่ที่ต้องการใช้งาน <span class="req">*</span></label>
-      <input type="text" id="f_area" placeholder="เช่น Zone A อาคาร 1 ชั้น 3">
-      <div class="emsg" id="e_area">กรุณาระบุพื้นที่</div>
+      <label>อาคาร <span class="req">*</span></label>
+      <div class="doc-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+        <button type="button" class="dbtn" onclick="selectBuilding(this,'A')">อาคาร A</button>
+        <button type="button" class="dbtn" onclick="selectBuilding(this,'B')">อาคาร B</button>
+        <button type="button" class="dbtn" onclick="selectBuilding(this,'C')">อาคาร C</button>
+        <button type="button" class="dbtn" onclick="selectBuilding(this,'D')">อาคาร D</button>
+      </div>
+      <div class="emsg" id="e_building">กรุณาเลือกอาคาร</div>
+    </div>
+    <div class="field" id="floor_field" style="display:none;">
+      <label>ชั้น <span class="req">*</span></label>
+      <div class="doc-grid" style="grid-template-columns:repeat(5,1fr);grid-auto-rows:auto">
+        <button type="button" class="dbtn" style="grid-column:auto" onclick="selectFloor(this,'1')">ชั้น 1</button>
+        <button type="button" class="dbtn" style="grid-column:auto" onclick="selectFloor(this,'2')">ชั้น 2</button>
+        <button type="button" class="dbtn" style="grid-column:auto" onclick="selectFloor(this,'3')">ชั้น 3</button>
+        <button type="button" class="dbtn" style="grid-column:auto" onclick="selectFloor(this,'4')">ชั้น 4</button>
+        <button type="button" class="dbtn" style="grid-column:auto" onclick="selectFloor(this,'5')">ชั้น 5</button>
+      </div>
+      <div class="emsg" id="e_floor">กรุณาเลือกชั้น</div>
     </div>
     <div class="field">
-      <label>วัตถุประสงค์โครงการ <span class="req">*</span></label>
-      <textarea id="f_obj" placeholder="อธิบายวัตถุประสงค์การใช้งานแบบแปลน"></textarea>
-      <div class="emsg" id="e_obj">กรุณาระบุวัตถุประสงค์</div>
+      <label>เลขห้อง <span class="req">*</span></label>
+      <input type="text" id="f_obj" placeholder="เช่น D206, A301">
+      <div class="emsg" id="e_obj">กรุณากรอกเลขห้อง</div>
     </div>
     <div class="nav-row">
       <button class="btn-back" onclick="goBack(2)">← ย้อนกลับ</button>
@@ -217,7 +233,7 @@ textarea { resize: none; height: 90px; }
 <div id="successScreen">
   <div class="suc-top">
     <h2>ส่งคำขอเรียบร้อยแล้ว</h2>
-    <p>คำขอได้รับการบันทึกในระบบแล้ว<br>เจ้าหน้าที่จะดำเนินการภายใน 3 วันทำการ</p>
+    <p>คำขอได้รับการบันทึกในระบบแล้ว<br>เมื่อผู้ดูแลอนุมัติ ระบบจะส่งลิงก์ดาวน์โหลดเอกสารทาง LINE ให้โดยอัตโนมัติ</p>
   </div>
   <div class="code-box">
     <div class="code-lbl">หมายเลขคำขอของท่าน</div>
@@ -226,8 +242,8 @@ textarea { resize: none; height: 90px; }
   <div class="steps-box">
     <div class="steps-ttl">ขั้นตอนต่อไป</div>
     <div class="sitem"><div class="snum">1</div><div class="stxt">เจ้าหน้าที่คัดเลือกเอกสารที่เกี่ยวข้องภายใน <strong>3 วันทำการ</strong></div></div>
-    <div class="sitem"><div class="snum">2</div><div class="stxt">ท่านจะได้รับเอกสารทาง <strong>อีเมล</strong> ที่ให้ไว้ พร้อมลิงก์ดาวน์โหลด</div></div>
-    <div class="sitem"><div class="snum">3</div><div class="stxt">ติดตามสถานะผ่าน <strong>LINE</strong> ได้ตลอดเวลา ระบบแจ้งเตือนทุกการเปลี่ยนแปลง</div></div>
+    <div class="sitem"><div class="snum">2</div><div class="stxt">เมื่ออนุมัติแล้ว ระบบจะส่งลิงก์ดาวน์โหลดเอกสารผ่าน <strong>LINE</strong> ให้ท่านโดยตรง</div></div>
+    <div class="sitem"><div class="snum">3</div><div class="stxt">หลังดาวน์โหลด กรุณากดยืนยันรับเอกสารใน LINE เพื่ออัปเดตสถานะคำขอ</div></div>
     <div class="sitem"><div class="snum">4</div><div class="stxt">เมื่อดำเนินการแล้ว ส่งแบบปรับปรุงกลับผ่านเมนู <strong>อัปโหลดเอกสาร</strong> ใน LINE</div></div>
   </div>
   <div class="close-wrap">
@@ -243,6 +259,27 @@ const LIFF_ID = '2009976605-TKtdEveT';
 let curStep = 1;
 let lineUid = '';
 let docs = [];
+let selectedBuilding = '';
+let selectedFloor = '';
+
+function selectBuilding(btn, val) {
+  selectedBuilding = val;
+  selectedFloor = '';
+  document.querySelectorAll('#floor_field .dbtn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.doc-grid .dbtn').forEach(b => {
+    if (['A','B','C','D'].includes(b.textContent.replace('อาคาร ',''))) b.classList.remove('sel');
+  });
+  btn.classList.add('sel');
+  document.getElementById('e_building').style.display = 'none';
+  document.getElementById('floor_field').style.display = 'block';
+}
+
+function selectFloor(btn, val) {
+  selectedFloor = val;
+  document.querySelectorAll('#floor_field .dbtn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('e_floor').style.display = 'none';
+}
 
 // ── INIT ──
 (async function init() {
@@ -300,9 +337,24 @@ function isValid(s) {
     { id:'f_email', eid:'e_email', fn: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
   ];
   const checks2 = [
-    { id:'f_area', eid:'e_area', fn: v => v.trim().length >= 2 },
-    { id:'f_obj',  eid:'e_obj',  fn: v => v.trim().length >= 5 },
+    { id:'f_obj',  eid:'e_obj',  fn: v => v.trim().length >= 1 },
   ];
+  if (s === 2) {
+    // validate building
+    if (!selectedBuilding) {
+      document.getElementById('e_building').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('e_building').style.display = 'none';
+    }
+    // validate floor
+    if (!selectedFloor) {
+      document.getElementById('e_floor').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('e_floor').style.display = 'none';
+    }
+  }
   const checks3 = [
     { id:'f_date', eid:'e_date', fn: v => v.trim().length > 0 },
   ];
@@ -352,7 +404,8 @@ function buildSummary() {
     ['โทรศัพท์',     document.getElementById('f_tel').value],
     ['อีเมล',        document.getElementById('f_email').value],
     ['ประเภทเอกสาร', docs.join(', ')],
-    ['พื้นที่',      document.getElementById('f_area').value],
+    ['อาคาร/ชั้น', `อาคาร ${selectedBuilding} ชั้น ${selectedFloor}`],
+    ['เลขห้อง', document.getElementById('f_obj').value],
   ];
   document.getElementById('summary').innerHTML =
     rows.map(([k,v]) => `<div class="srow"><span class="sk">${k}</span><span class="sv">${v}</span></div>`).join('');
@@ -373,7 +426,11 @@ async function doSubmit() {
     phone:         document.getElementById('f_tel').value.trim(),
     email:         document.getElementById('f_email').value.trim(),
     documentType:  docs.join(', '),
-    area:          document.getElementById('f_area').value.trim(),
+    building:      selectedBuilding,
+    floor:         selectedFloor,
+    area:          `อาคาร ${selectedBuilding} ชั้น ${selectedFloor}`,
+    roomNumber:    document.getElementById('f_obj').value.trim(),
+    room_number:   document.getElementById('f_obj').value.trim(),
     objective:     document.getElementById('f_obj').value.trim(),
     requiredDate:  document.getElementById('f_date').value,
     note:          document.getElementById('f_note').value.trim(),
