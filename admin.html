@@ -510,8 +510,6 @@ async function doApprove() {
     if (res.ok && (json.success !== false)) {
       // แสดง success
       document.getElementById('fileChecklist').innerHTML = '';
-      document.querySelector('.note').style.display = 'none';
-      document.getElementById('approveBtn').style.display = 'none';
 
       const successHtml = `
         <div class="success-screen">
