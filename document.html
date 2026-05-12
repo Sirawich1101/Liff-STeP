@@ -2,282 +2,234 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>เอกสารแบบแปลน — STeP CMU</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --navy: #1A3A5C; --navy2: #2E6DA4; --tint: #EBF3FB; --w: #FFFFFF; --bg: #F8F9FA; --border: #CED4DA; --text: #212529; --sub: #6C757D; --r: 8px; --font: 'Sarabun', sans-serif; }
-html { font-size: 17px; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-
-.header { background: var(--navy); padding: 22px 18px 30px; position: relative; }
-.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: var(--bg); border-radius: 16px 16px 0 0; }
-.header h1 { color: var(--w); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.header p { color: #90BEE0; font-size: 14px; }
-
-.body { padding: 20px 18px; }
-
-.doc-preview {
-  background: var(--w); border: 2px solid var(--border); border-radius: var(--r);
-  padding: 24px 20px; margin-bottom: 16px;
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#003B71;--navy2:#1A5A9A;--navy3:#EBF3FB;
+  --green:#1A7F45;--green2:#EAFAF1;
+  --amber:#B9770E;--amber2:#FEF9E7;
+  --red:#C0392B;--red2:#FDEDEC;
+  --border:#DEE2E6;--bg:#F5F7FA;--white:#FFFFFF;
+  --text:#1A1A2E;--sub:#6C757D;
+  --r:12px;--shadow:0 2px 12px rgba(0,59,113,.08);
 }
-.doc-title-bar {
-  border-bottom: 3px solid var(--navy); padding-bottom: 12px; margin-bottom: 16px;
-  display: flex; justify-content: space-between; align-items: flex-start;
-}
-.doc-logo { font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 1px; }
-.doc-label { font-size: 11px; color: var(--sub); text-align: right; }
-.doc-main-title { font-size: 20px; font-weight: 700; color: var(--navy); text-align: center; margin-bottom: 16px; }
-.doc-info { margin-bottom: 12px; }
-.doc-row { display: flex; gap: 8px; padding: 7px 0; font-size: 15px; border-bottom: 1px solid #EEE; }
-.doc-row:last-child { border-bottom: none; }
-.doc-k { color: var(--sub); min-width: 120px; flex-shrink: 0; }
-.doc-v { color: var(--text); font-weight: 600; }
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--navy2);
-  background: var(--tint);
-  border-radius: 999px;
-  padding: 5px 10px;
-  margin-bottom: 14px;
-}
-
-.doc-stamp {
-  margin-top: 20px; padding: 16px; background: var(--tint);
-  border: 2px solid var(--navy2); border-radius: var(--r); text-align: center;
-}
-.doc-stamp-text { font-size: 16px; font-weight: 700; color: var(--navy); }
-.doc-stamp-date { font-size: 13px; color: var(--sub); margin-top: 4px; }
-
-.note-box { background: #FEF9E7; border: 1px solid #F9E79F; border-radius: var(--r); padding: 14px 16px; font-size: 14px; color: #7D6608; line-height: 1.5; margin-bottom: 16px; }
-
-.btn-download {
-  width: 100%; height: 54px; background: var(--navy); border: none;
-  border-radius: var(--r); font-family: var(--font); font-size: 17px;
-  font-weight: 700; color: var(--w); cursor: pointer; margin-bottom: 10px;
-}
-.btn-confirm {
-  width: 100%; height: 54px; background: var(--w); border: 2px solid var(--navy);
-  border-radius: var(--r); font-family: var(--font); font-size: 17px;
-  font-weight: 700; color: var(--navy); cursor: pointer; margin-bottom: 32px;
-}
-.btn-confirm:disabled, .btn-download:disabled { opacity: .6; cursor: not-allowed; }
-
-#loading { text-align: center; padding: 40px; color: var(--sub); }
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@media print {
-  .header, .note-box, .btn-download, .btn-confirm { display: none; }
-  .doc-preview { border: none; padding: 0; }
-  body { background: #fff; }
-}
+html{font-size:16px}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:20px 18px 36px;position:relative}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:var(--bg);border-radius:20px 20px 0 0}
+.hdr-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;margin-bottom:6px}
+.hdr h1{color:#fff;font-size:20px;font-weight:800}
+.hdr p{color:rgba(255,255,255,.65);font-size:13px;margin-top:2px}
+.body{padding:12px 16px 40px}
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.card-hd{background:var(--navy);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.card-code{color:#fff;font-size:17px;font-weight:800;letter-spacing:.5px}
+.card-date{color:rgba(255,255,255,.6);font-size:12px}
+.card-bd{padding:14px 16px}
+.sec-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--navy3)}
+.info-grid{display:grid;grid-template-columns:90px 1fr;gap:1px;background:var(--border);border-radius:8px;overflow:hidden}
+.info-cell{background:var(--white);padding:9px 12px;font-size:14px}
+.info-cell.key{background:#FAFBFC;color:var(--sub);font-weight:600;font-size:13px}
+.info-cell.val{color:var(--text);font-weight:500}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.status-pill.delivered{background:var(--amber2);color:var(--amber)}
+.status-pill.received{background:var(--green2);color:var(--green)}
+.status-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.file-item{display:flex;align-items:center;gap:12px;background:var(--navy3);border-radius:10px;padding:12px 14px}
+.file-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.file-info{flex:1}
+.file-name{font-size:14px;font-weight:700;color:var(--navy)}
+.file-size{font-size:12px;color:var(--sub);margin-top:2px}
+.btn-row{display:flex;flex-direction:column;gap:10px}
+.btn{width:100%;height:52px;border:none;border-radius:10px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-outline{background:var(--white);color:var(--navy);border:2px solid var(--navy)}
+.btn-success-solid{background:var(--green);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.alert{border-radius:10px;padding:12px 14px;font-size:14px;margin-top:12px;display:none;line-height:1.5}
+.alert.show{display:block}
+.alert.success{background:var(--green2);color:var(--green);border:1px solid #A9DFBF}
+.alert.error{background:var(--red2);color:var(--red);border:1px solid #F5B7B1}
+.alert.warn{background:var(--amber2);color:var(--amber);border:1px solid #F9E79F}
+.success-screen{text-align:center;padding:30px 20px;background:var(--green2);border-radius:var(--r);border:1px solid #A9DFBF}
+.success-screen h3{color:var(--green);font-size:20px;font-weight:800;margin-bottom:8px}
+.success-screen p{color:var(--sub);font-size:14px;line-height:1.7}
+.success-screen .code-badge{display:inline-block;background:var(--navy3);color:var(--navy);font-weight:800;padding:4px 14px;border-radius:20px;font-size:15px;margin-bottom:14px}
+#loading{text-align:center;padding:50px 20px;color:var(--sub)}
+.loader{width:36px;height:36px;border:3px solid var(--navy3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+#result{display:none}
+#confirmDone{display:none}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>เอกสารแบบแปลน</h1>
-  <p>อุทยานวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเชียงใหม่</p>
+<div class="hdr">
+  <div class="hdr-badge">เอกสารแบบแปลน</div>
+  <h1>รับเอกสาร</h1>
+  <p>STeP CMU — Science and Technology Park</p>
 </div>
 
 <div class="body">
-  <div id="loading">กำลังโหลดเอกสาร...</div>
+  <div id="loading"><div class="loader"></div><div>กำลังโหลดข้อมูล...</div></div>
 
-  <div id="content" style="display:none;">
-    <div class="doc-preview" id="docPreview">
-      <div class="status-pill" id="statusPill">กำลังเตรียมเอกสาร</div>
-      <div class="doc-title-bar">
-        <div class="doc-logo">STeP CMU</div>
-        <div class="doc-label">เอกสารแบบแปลน<br><span id="pCode" style="font-weight:600;color:var(--navy);">—</span></div>
+  <div id="result">
+    <div class="card">
+      <div class="card-hd">
+        <span class="card-code" id="dCode">—</span>
+        <span class="card-date" id="dDate">—</span>
       </div>
-      <div class="doc-main-title">เอกสารแบบแปลนรายการ</div>
-      <div class="doc-info">
-        <div class="doc-row"><span class="doc-k">หมายเลขคำขอ</span><span class="doc-v" id="pCode2">—</span></div>
-        <div class="doc-row"><span class="doc-k">ผู้ขอ</span><span class="doc-v" id="pName">—</span></div>
-        <div class="doc-row"><span class="doc-k">หน่วยงาน</span><span class="doc-v" id="pOrg">—</span></div>
-        <div class="doc-row"><span class="doc-k">ประเภทเอกสาร</span><span class="doc-v" id="pType">—</span></div>
-        <div class="doc-row"><span class="doc-k">พื้นที่</span><span class="doc-v" id="pArea">—</span></div>
-        <div class="doc-row"><span class="doc-k">เลขห้อง</span><span class="doc-v" id="pRoom">—</span></div>
-        <div class="doc-row"><span class="doc-k">ไฟล์ที่จัดเตรียม</span><span class="doc-v" id="pFile">—</span></div>
-        <div class="doc-row"><span class="doc-k">วันที่ยื่นคำขอ</span><span class="doc-v" id="pDate">—</span></div>
-      </div>
-      <div class="doc-stamp">
-        <div class="doc-stamp-text">อนุมัติแล้ว</div>
-        <div class="doc-stamp-date" id="pApproved">—</div>
+      <div class="card-bd" style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:14px;color:var(--sub)">สถานะ</span>
+        <span class="status-pill delivered" id="dStatus">รอรับเอกสาร</span>
       </div>
     </div>
 
-    <div class="note-box" id="noteBox">
-      ระบบกำลังเตรียมเอกสารสำหรับคำขอนี้ หากมีไฟล์จริงในระบบ ปุ่มดาวน์โหลดด้านล่างจะพาไปยังไฟล์จริงก่อนเสมอ
+    <div class="card">
+      <div class="card-bd">
+        <div class="sec-title">รายละเอียดคำขอ</div>
+        <div class="info-grid">
+          <div class="info-cell key">ผู้ขอ</div><div class="info-cell val" id="dName">—</div>
+          <div class="info-cell key">ประเภท</div><div class="info-cell val" id="dType">—</div>
+          <div class="info-cell key">พื้นที่</div><div class="info-cell val" id="dArea">—</div>
+          <div class="info-cell key">วันที่ขอ</div><div class="info-cell val" id="dReqDate">—</div>
+        </div>
+      </div>
     </div>
 
-    <button class="btn-download" id="downloadBtn" onclick="downloadDoc()">ดาวน์โหลดเอกสาร</button>
-    <button class="btn-confirm" id="confirmBtn" onclick="confirmReceipt()">ยืนยันรับเอกสาร</button>
+    <div class="card">
+      <div class="card-bd">
+        <div class="sec-title">ไฟล์เอกสารที่จัดเตรียม</div>
+        <div class="file-list" id="fileList"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="downloadBtn" onclick="downloadAll()">ดาวน์โหลดเอกสาร</button>
+          <button class="btn btn-outline" id="confirmBtn" onclick="confirmReceipt()">ยืนยันรับเอกสาร</button>
+        </div>
+        <div id="alertBox" class="alert"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmDone">
+    <div class="success-screen">
+      <div class="code-badge" id="donCode">—</div>
+      <h3>ยืนยันรับเอกสารเรียบร้อย</h3>
+      <p>ระบบบันทึกการรับเอกสารของท่านแล้ว<br><br>
+      หากต้องการส่งแบบแปลนที่แก้ไขกลับ<br>
+      กดเมนู <strong>ส่งเอกสาร</strong> หรือพิมพ์ว่า <strong>ส่งเอกสาร</strong> ใน LINE</p>
+    </div>
   </div>
 </div>
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
-const LIFF_ID = '2009976605-TKtdEveT';
-const params = new URLSearchParams(window.location.search);
-const code = params.get('code') || '';
-const token = params.get('token') || '';
-let lineUserId = '';
-let currentRequest = null;
+const FILE_ID_MAP = {
+  'D':{'1':{'architectural.pdf':'1jNSAu1KMPWdC2T9rRiVndv-1qG6jyetY','structural.pdf':'','electrical.pdf':'','plumbing.pdf':'','hvac.pdf':'','general.pdf':''},'2':{},'3':{},'4':{},'5':{}},
+  'A':{'1':{},'2':{},'3':{}},
+  'B':{'1':{},'2':{},'3':{}},
+  'C':{'1':{},'2':{},'3':{}},
+  'N':{'1':{},'2':{}},
+};
+const FILE_LABELS = {'architectural.pdf':'แบบสถาปัตยกรรม','structural.pdf':'แบบวิศวกรรมโครงสร้าง','electrical.pdf':'แบบระบบไฟฟ้า','plumbing.pdf':'แบบระบบสุขาภิบาล','hvac.pdf':'แบบระบบปรับอากาศ','general.pdf':'แบบแปลนทั่วไป'};
+const TYPE_TO_FILE = {'แบบสถาปัตยกรรม':'architectural.pdf','สถาปัตยกรรม':'architectural.pdf','แบบวิศวกรรมโครงสร้าง':'structural.pdf','วิศวกรรมโครงสร้าง':'structural.pdf','โครงสร้าง':'structural.pdf','แบบระบบไฟฟ้า':'electrical.pdf','ระบบไฟฟ้า':'electrical.pdf','ไฟฟ้า':'electrical.pdf','แบบระบบสุขาภิบาล':'plumbing.pdf','ระบบสุขาภิบาล':'plumbing.pdf','สุขาภิบาล':'plumbing.pdf','แบบระบบปรับอากาศ':'hvac.pdf','ระบบปรับอากาศ':'hvac.pdf','แบบระบบเครื่องกล':'hvac.pdf','แบบแปลนทั่วไป':'general.pdf'};
 
-function normalizeStatus(status) {
-  if (status === 'กำลังจัดเตรียมเอกสาร' || status === 'APPROVED') return 'FILE_UPLOADED';
-  return status || '';
+const params=new URLSearchParams(location.search);
+const code=params.get('code')||'';
+const token=params.get('token')||'';
+const autoConfirm=params.get('confirm')==='1';
+let requestData=null, lineUserId='', fileLinks=[];
+
+window.addEventListener('DOMContentLoaded',init);
+
+async function init(){
+  if(!code){showLoading(false);showAlert('ไม่พบรหัสคำขอ — กรุณาเปิดลิงก์จาก LINE','error');return;}
+  try{if(window.liff){await liff.init({liffId:'2009976605-TktdEveT'});if(liff.isLoggedIn()){const p=await liff.getProfile();lineUserId=p.userId;}}}catch(e){}
+  await loadRequest();
 }
 
-function displayStatus(status) {
-  const map = {
-    PENDING_ADMIN: 'รับคำขอแล้ว',
-    FILE_UPLOADED: 'เจ้าหน้าที่อัปโหลดเอกสารแล้ว',
-    DELIVERED: 'ส่งเอกสารให้ท่านแล้ว',
-    RECEIVED: 'ยืนยันรับเอกสารแล้ว',
-  };
-  return map[normalizeStatus(status)] || status || '-';
+async function loadRequest(){
+  try{
+    const res=await fetch('/api/get-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestCode:code})});
+    const json=await res.json();
+    if(!json.found||!json.request){showLoading(false);showAlert(`ไม่พบคำขอ "${code}" ในระบบ`,'error');return;}
+    requestData=json.request;
+    render(requestData);
+    showLoading(false);
+    document.getElementById('result').style.display='block';
+    if(autoConfirm&&requestData.status==='DELIVERED')setTimeout(()=>confirmReceipt(),800);
+  }catch(e){showLoading(false);showAlert('เกิดข้อผิดพลาด: '+e.message,'error');}
 }
 
-function hasRealFile(request = {}) {
-  return Boolean(
-    request.file_download_url ||
-    request.drive_file_url ||
-    request.drive_file_id ||
-    request.admin_file_name
-  );
-}
+function render(r){
+  document.getElementById('dCode').textContent=r.request_code||code;
+  document.getElementById('dDate').textContent=formatDate(r.created_at);
+  document.getElementById('dName').textContent=r.requester_name||'—';
+  document.getElementById('dType').textContent=r.document_type||'—';
+  document.getElementById('dArea').textContent=r.area||'—';
+  document.getElementById('dReqDate').textContent=r.required_date||'—';
+  const statusEl=document.getElementById('dStatus');
+  if(r.status==='RECEIVED'){statusEl.textContent='รับเอกสารแล้ว';statusEl.className='status-pill received';showConfirmDone(r.request_code||code);return;}
 
-function isConfirmableStatus(status) {
-  return ['DELIVERED', 'RECEIVED', 'ส่งเอกสารให้ผู้ขอแล้ว'].includes(status);
-}
+  const building=(r.building||'').toUpperCase();
+  const floor=String(r.floor||'1');
+  const folderFiles=(FILE_ID_MAP[building]||{})[floor]||{};
+  const types=(r.document_type||'').split(',').map(s=>s.trim()).filter(Boolean);
 
-async function initUser() {
-  try {
-    await liff.init({ liffId: LIFF_ID });
-    if (!liff.isLoggedIn()) {
-      liff.login();
-      return;
-    }
-    const profile = await liff.getProfile();
-    lineUserId = profile.userId || '';
-  } catch (e) {}
-}
+  fileLinks=[];
+  types.forEach(type=>{
+    let fname=null;
+    for(const[key,f]of Object.entries(TYPE_TO_FILE)){if(type.includes(key)||key.includes(type)){fname=f;break;}}
+    if(!fname)return;
+    const fileId=folderFiles[fname]||'';
+    fileLinks.push({label:FILE_LABELS[fname]||type,fname,fileId,url:fileId?`https://drive.google.com/uc?export=download&id=${fileId}`:null});
+  });
 
-async function loadDocument() {
-  await initUser();
+  const container=document.getElementById('fileList');
+  container.innerHTML=fileLinks.length===0
+    ?'<div style="font-size:14px;color:var(--sub);padding:12px 0">ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่</div>'
+    :fileLinks.map(f=>`<div class="file-item"><div class="file-icon">PDF</div><div class="file-info"><div class="file-name">${f.label}</div><div class="file-size">${f.url?'พร้อมดาวน์โหลด':'ไม่พบไฟล์ในระบบ'}</div></div></div>`).join('');
 
-  if (!code) {
-    document.getElementById('loading').textContent = 'ไม่พบหมายเลขคำขอ';
-    return;
-  }
-
-  fetch('/api/get-request', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requestCode: code, lineUserId })
-  })
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
-
-      if (data && data.found) {
-        const r = data.request;
-        currentRequest = {
-          ...r,
-          status: normalizeStatus(r.status),
-        };
-        document.getElementById('pCode').textContent = r.request_code || code;
-        document.getElementById('pCode2').textContent = r.request_code || code;
-        document.getElementById('pName').textContent = r.requester_name || '-';
-        document.getElementById('pOrg').textContent = r.company || '-';
-        document.getElementById('pType').textContent = r.document_type || '-';
-        document.getElementById('pArea').textContent = r.area || '-';
-        document.getElementById('pRoom').textContent = r.objective || r.room_number || r.roomNumber || '-';
-        document.getElementById('pFile').textContent = r.admin_file_name || r.pdf_file_name || 'เอกสารแนบจากระบบ';
-        document.getElementById('pDate').textContent = r.created_at ? new Date(r.created_at).toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'}) : '-';
-        document.getElementById('pApproved').textContent = r.approved_at
-          ? new Date(r.approved_at).toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'})
-          : new Date().toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'});
-
-        document.getElementById('statusPill').textContent = displayStatus(currentRequest.status);
-
-        const noteBox = document.getElementById('noteBox');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const confirmBtn = document.getElementById('confirmBtn');
-
-        if (hasRealFile(currentRequest)) {
-          noteBox.textContent = 'เอกสารคำขอนี้มีไฟล์จริงอยู่ในระบบแล้ว ปุ่มดาวน์โหลดจะดึงไฟล์ผ่าน backend proxy เพื่อซ่อนลิงก์ต้นทางและตรวจ token ก่อนทุกครั้ง';
-          downloadBtn.textContent = 'ดาวน์โหลดไฟล์จริง';
-        } else {
-          noteBox.textContent = 'ยังไม่พบไฟล์จริงในระบบ จึงจะใช้เอกสารตัวอย่าง (Demo PDF) เป็น fallback ชั่วคราวจนกว่าจะอัปโหลดไฟล์จริงเข้าระบบ';
-          downloadBtn.textContent = 'ดาวน์โหลดเอกสารตัวอย่าง (Demo PDF)';
-        }
-
-        if (!isConfirmableStatus(currentRequest.status)) {
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = 'ยังไม่อยู่ในสถานะที่ยืนยันรับได้';
-        }
-        if (currentRequest.status === 'RECEIVED') {
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = 'ยืนยันรับเอกสารเรียบร้อยแล้ว';
-          confirmBtn.style.background = '#EAFAF1';
-          confirmBtn.style.borderColor = '#1E8449';
-          confirmBtn.style.color = '#1E8449';
-        }
-      } else {
-        document.getElementById('pCode').textContent = code;
-        document.getElementById('pCode2').textContent = code;
-        document.getElementById('statusPill').textContent = 'ไม่พบข้อมูลคำขอ';
-        document.getElementById('downloadBtn').disabled = true;
-        document.getElementById('confirmBtn').disabled = true;
-        document.getElementById('noteBox').textContent = 'ไม่พบข้อมูลคำขอในระบบ กรุณากลับไปเปิดผ่านลิงก์จาก LINE OA หรือติดต่อเจ้าหน้าที่';
-      }
-    })
-    .catch(() => {
-      document.getElementById('loading').textContent = 'ไม่สามารถโหลดข้อมูลได้';
-    });
-}
-
-function downloadDoc() {
-  const query = new URLSearchParams({ code, token });
-  window.location.href = `/api/file-download?${query.toString()}`;
-}
-
-async function confirmReceipt() {
-  const btn = document.getElementById('confirmBtn');
-  btn.disabled = true;
-  btn.textContent = 'กำลังยืนยัน...';
-
-  try {
-    const res = await fetch('/api/confirm', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requestCode: code, lineUserId, token })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data?.success === false) throw new Error(data?.error || data?.message || 'confirm failed');
-    btn.textContent = 'ยืนยันรับเอกสารเรียบร้อยแล้ว';
-    btn.style.background = '#EAFAF1';
-    btn.style.borderColor = '#1E8449';
-    btn.style.color = '#1E8449';
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = 'ยืนยันรับเอกสาร';
-    alert(e.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
+  if(r.status==='RECEIVED'){
+    const cb=document.getElementById('confirmBtn');
+    cb.disabled=true;cb.textContent='ยืนยันรับเรียบร้อยแล้ว';cb.className='btn btn-success-solid';
   }
 }
 
-loadDocument();
+function downloadAll(){
+  const valid=fileLinks.filter(f=>f.url);
+  if(valid.length===0){showAlert('ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่','warn');return;}
+  valid.forEach((f,i)=>setTimeout(()=>window.open(f.url,'_blank'),i*600));
+  showAlert(`กำลังเปิด ${valid.length} ไฟล์ หากเบราว์เซอร์ถาม ให้กด "Allow"`,'warn');
+}
+
+async function confirmReceipt(){
+  const btn=document.getElementById('confirmBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>กำลังยืนยัน...';
+  try{
+    const res=await fetch('/api/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestCode:code,lineUserId:lineUserId||requestData?.line_user_id||'',token})});
+    const json=await res.json().catch(()=>({}));
+    if(res.ok&&json.success!==false){showConfirmDone(code);}
+    else throw new Error(json.error||json.message||'เกิดข้อผิดพลาด');
+  }catch(e){
+    showAlert('เกิดข้อผิดพลาด: '+e.message,'error');
+    btn.disabled=false;btn.textContent='ยืนยันรับเอกสาร';
+  }
+}
+
+function showConfirmDone(requestCode){
+  document.getElementById('result').style.display='none';
+  document.getElementById('donCode').textContent=requestCode||code;
+  document.getElementById('confirmDone').style.display='block';
+}
+
+function showLoading(show){document.getElementById('loading').style.display=show?'block':'none';}
+function showAlert(msg,type='error'){const el=document.getElementById('alertBox');el.textContent=msg;el.className=`alert ${type} show`;}
+function formatDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric',timeZone:'Asia/Bangkok'});}catch{return iso;}}
 </script>
 </body>
 </html>
