@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>รายการคำขอทั้งหมด — STeP CMU Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#003B71;--navy2:#1A5A9A;--navy3:#EBF3FB;
+  --gold:#D4A017;
+  --green:#1A7F45;--green2:#EAFAF1;
+  --red:#C0392B;--red2:#FDEDEC;
+  --amber:#B9770E;--amber2:#FEF9E7;
+  --gray:#6C757D;--border:#DEE2E6;
+  --bg:#F5F7FA;--white:#FFFFFF;
+  --text:#1A1A2E;--sub:#6C757D;
+  --r:12px;--shadow:0 2px 12px rgba(0,59,113,.08);
+}
+html{font-size:16px}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ─── HEADER ─── */
+.hdr{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  padding:20px 18px 36px;position:relative;
+}
+.hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:20px;
+  background:var(--bg);border-radius:20px 20px 0 0;
+}
+.hdr-badge{
+  display:inline-block;background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);color:#fff;
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
+  letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;
+}
+.hdr h1{color:#fff;font-size:20px;font-weight:800}
+.hdr p{color:rgba(255,255,255,.65);font-size:13px;margin-top:2px}
+
+/* ─── STATS BAR ─── */
+.stats{
+  display:flex;gap:10px;padding:0 16px;margin-top:-10px;
+  position:relative;z-index:1;margin-bottom:14px;
+}
+.stat{
+  flex:1;background:var(--white);border-radius:10px;
+  box-shadow:var(--shadow);padding:12px 10px;text-align:center;
+}
+.stat-num{font-size:22px;font-weight:800;color:var(--navy)}
+.stat-lbl{font-size:11px;color:var(--sub);margin-top:2px}
+.stat.amber .stat-num{color:var(--amber)}
+.stat.green .stat-num{color:var(--green)}
+
+/* ─── FILTER TABS ─── */
+.tabs{
+  display:flex;gap:6px;padding:0 16px;margin-bottom:12px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;padding:7px 16px;border-radius:20px;
+  font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;
+  border:1.5px solid var(--border);background:var(--white);
+  color:var(--sub);cursor:pointer;transition:all .15s;
+}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ─── SEARCH ─── */
+.search-wrap{padding:0 16px;margin-bottom:14px}
+.search-box{
+  width:100%;height:44px;border:1.5px solid var(--border);
+  border-radius:10px;padding:0 14px 0 40px;
+  font-family:'Sarabun',sans-serif;font-size:15px;
+  background:var(--white);color:var(--text);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236C757D' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:12px center;
+  outline:none;transition:border-color .15s;
+}
+.search-box:focus{border-color:var(--navy)}
+
+/* ─── LIST ─── */
+.list{padding:0 16px;display:flex;flex-direction:column;gap:10px;padding-bottom:30px}
+.request-card{
+  background:var(--white);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:14px 16px;
+  cursor:pointer;transition:all .15s;
+  border-left:4px solid var(--border);
+  text-decoration:none;display:block;
+}
+.request-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,59,113,.12)}
+.request-card.pending{border-left-color:var(--amber)}
+.request-card.delivered{border-left-color:var(--green)}
+.request-card.received{border-left-color:var(--navy)}
+
+.rc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rc-code{font-size:15px;font-weight:800;color:var(--navy)}
+.rc-status{
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;
+}
+.rc-status.pending{background:var(--amber2);color:var(--amber)}
+.rc-status.delivered{background:var(--green2);color:var(--green)}
+.rc-status.received{background:var(--navy3);color:var(--navy)}
+
+.rc-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.rc-detail{font-size:12px;color:var(--sub);line-height:1.5}
+.rc-tags{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;
+}
+.rc-tag{
+  font-size:11px;padding:2px 8px;border-radius:8px;
+  background:var(--navy3);color:var(--navy);font-weight:600;
+}
+.rc-arrow{color:var(--sub);font-size:16px;margin-left:8px}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:50px 20px;color:var(--sub)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+
+/* ─── LOADING ─── */
+#loading{text-align:center;padding:50px 20px;color:var(--sub)}
+.loader{
+  width:36px;height:36px;border:3px solid var(--navy3);
+  border-top-color:var(--navy);border-radius:50%;
+  animation:spin .7s linear infinite;margin:0 auto 14px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── REFRESH BTN ─── */
+.refresh-btn{
+  position:fixed;bottom:24px;right:20px;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  border:none;font-size:20px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,59,113,.3);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.refresh-btn:active{transform:scale(.9)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-badge">Admin Panel</div>
+  <h1>รายการคำขอทั้งหมด</h1>
+  <p>STeP CMU — Science and Technology Park</p>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" id="statTotal">—</div>
+    <div class="stat-lbl">ทั้งหมด</div>
+  </div>
+  <div class="stat amber">
+    <div class="stat-num" id="statPending">—</div>
+    <div class="stat-lbl">รอดำเนินการ</div>
+  </div>
+  <div class="stat green">
+    <div class="stat-num" id="statDone">—</div>
+    <div class="stat-lbl">ดำเนินการแล้ว</div>
+  </div>
+</div>
+
+<!-- FILTER TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="setFilter('all')">ทั้งหมด</button>
+  <button class="tab" onclick="setFilter('pending')">รอดำเนินการ</button>
+  <button class="tab" onclick="setFilter('delivered')">ส่งแล้ว</button>
+  <button class="tab" onclick="setFilter('received')">รับแล้ว</button>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <input class="search-box" type="search" placeholder="ค้นหา รหัส / ชื่อ / อาคาร..."
+    oninput="doSearch(this.value)" autocomplete="off">
+</div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loader"></div>
+  <div>กำลังโหลดรายการคำขอ...</div>
+</div>
+
+<!-- LIST -->
+<div class="list" id="list" style="display:none"></div>
+
+<!-- REFRESH -->
+<button class="refresh-btn" onclick="loadAll()" title="รีเฟรช">↻</button>
+
+<script>
+// ─── STATE ─────────────────────────────────────
+let allRequests  = [];
+let currentFilter = 'all';
+let searchQuery  = '';
+
+const STATUS_LABEL = {
+  'PENDING_ADMIN':  { label: 'รอดำเนินการ', cls: 'pending' },
+  'รับคำขอแล้ว':   { label: 'รอดำเนินการ', cls: 'pending' },
+  'FILE_UPLOADED':  { label: 'รอส่ง', cls: 'pending' },
+  'DELIVERED':      { label: 'ส่งแล้ว', cls: 'delivered' },
+  'RECEIVED':       { label: 'รับแล้ว', cls: 'received' },
+};
+
+// ─── INIT ─────────────────────────────────────
+window.addEventListener('DOMContentLoaded', loadAll);
+
+async function loadAll() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('list').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/admin-list', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    const json = await res.json();
+
+    allRequests = (json.requests || []).sort((a, b) => {
+      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    });
+
+    updateStats();
+    renderList();
+
+  } catch(e) {
+    document.getElementById('loading').innerHTML =
+      `<div class="empty"><div class="empty-icon">⚠️</div><div>โหลดไม่ได้: ${e.message}</div></div>`;
+  }
+}
+
+function updateStats() {
+  const total   = allRequests.length;
+  const pending = allRequests.filter(r => isPending(r.status)).length;
+  const done    = allRequests.filter(r => !isPending(r.status)).length;
+
+  document.getElementById('statTotal').textContent   = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statDone').textContent    = done;
+}
+
+function isPending(status) {
+  return ['PENDING_ADMIN','รับคำขอแล้ว','FILE_UPLOADED',''].includes(status || '');
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['all','pending','delivered','received'][i] === f);
+  });
+  renderList();
+}
+
+function doSearch(q) {
+  searchQuery = q.toLowerCase();
+  renderList();
+}
+
+function renderList() {
+  document.getElementById('loading').style.display = 'none';
+  const list = document.getElementById('list');
+  list.style.display = 'flex';
+
+  let items = allRequests;
+
+  // Filter by status
+  if (currentFilter === 'pending') {
+    items = items.filter(r => isPending(r.status));
+  } else if (currentFilter === 'delivered') {
+    items = items.filter(r => r.status === 'DELIVERED');
+  } else if (currentFilter === 'received') {
+    items = items.filter(r => r.status === 'RECEIVED');
+  }
+
+  // Filter by search
+  if (searchQuery) {
+    items = items.filter(r => {
+      const s = `${r.request_code} ${r.requester_name} ${r.company} ${r.area} ${r.building} ${r.document_type}`.toLowerCase();
+      return s.includes(searchQuery);
+    });
+  }
+
+  if (items.length === 0) {
+    list.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        <div>ไม่มีรายการ</div>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map(r => {
+    const st = STATUS_LABEL[r.status] || { label: r.status || 'รอดำเนินการ', cls: 'pending' };
+    const types = (r.document_type || '').split(',').map(s => s.trim()).filter(Boolean);
+    const area  = r.area || (r.building ? `อาคาร ${r.building} ชั้น ${r.floor || '?'}` : '—');
+    const date  = formatDate(r.required_date);
+
+    return `
+      <a class="request-card ${st.cls}" href="/admin.html?code=${encodeURIComponent(r.request_code)}">
+        <div class="rc-top">
+          <span class="rc-code">${r.request_code || '—'}</span>
+          <span class="rc-status ${st.cls}">${st.label}</span>
+        </div>
+        <div class="rc-name">${r.requester_name || '—'}</div>
+        <div class="rc-detail">
+          ${r.company ? `🏢 ${r.company}` : ''} ${r.company && area ? '·' : ''} ${area ? `📍 ${area}` : ''}
+          ${date ? `<br>📅 ต้องการภายใน ${date}` : ''}
+        </div>
+        ${types.length ? `<div class="rc-tags">${types.map(t => `<span class="rc-tag">${t}</span>`).join('')}</div>` : ''}
+      </a>`;
+  }).join('');
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('th-TH', {
+      year:'numeric', month:'short', day:'numeric', timeZone:'Asia/Bangkok'
+    });
+  } catch { return iso; }
+}
+</script>
+</body>
+</html>
