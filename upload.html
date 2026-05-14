@@ -187,6 +187,8 @@ let selectedFiles = [];
     if (!liff.isLoggedIn()) { liff.login(); return; }
     const p = await liff.getProfile();
     lineUid = p.userId;
+    // Auto-fill รหัสคำขอล่าสุด
+    autoFillLatestCode(lineUid);
     if (p.displayName) document.getElementById('f_name').value = p.displayName;
   } catch(e) {}
 })();
@@ -307,6 +309,32 @@ function showSuccess(code) {
 
 function closePage() {
   try { liff.closeWindow(); } catch(e) { window.close(); }
+}
+
+// Auto-fill latest request code
+async function autoFillLatestCode(userId) {
+  try {
+    const res  = await fetch('/api/admin-list', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({})
+    });
+    const json = await res.json();
+    if (!json.requests) return;
+
+    // หาคำขอล่าสุดของ user นี้
+    const myRequests = json.requests
+      .filter(r => r.line_user_id === userId && r.request_code)
+      .sort((a, b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+    if (myRequests.length > 0) {
+      const latest = myRequests[0];
+      const codeInput = document.getElementById('f_code');
+      if (codeInput && !codeInput.value) {
+        codeInput.value = latest.request_code;
+      }
+    }
+  } catch(e) { /* ไม่เป็นไรถ้าดึงไม่ได้ */ }
 }
 </script>
 </body>

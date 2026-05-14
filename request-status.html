@@ -140,6 +140,7 @@ let lineUid = '';
     if (liff.isLoggedIn()) {
       const p = await liff.getProfile();
       lineUid = p.userId;
+      autoFillLatestCode(lineUid);
     }
   } catch(e) {}
 })();
@@ -231,6 +232,29 @@ async function doSearch() {
 
   btn.disabled = false;
   btn.innerHTML = 'ค้นหาสถานะ';
+}
+
+async function autoFillLatestCode(userId) {
+  try {
+    const res  = await fetch('/api/admin-list', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({})
+    });
+    const json = await res.json();
+    if (!json.requests) return;
+
+    const myRequests = json.requests
+      .filter(r => r.line_user_id === userId && r.request_code)
+      .sort((a, b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+    if (myRequests.length > 0) {
+      const codeInput = document.getElementById('f_code');
+      if (codeInput && !codeInput.value) {
+        codeInput.value = myRequests[0].request_code;
+      }
+    }
+  } catch(e) {}
 }
 
 function renderResult(data, code) {
