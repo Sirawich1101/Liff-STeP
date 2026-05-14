@@ -208,6 +208,12 @@ async function loadRequest() {
       return;
     }
     requestData = json.request;
+    // บันทึกรหัสล่าสุดลง localStorage เพื่อใช้ใน upload/status pages
+    try {
+      localStorage.setItem('step_latest_code', requestData.request_code || code);
+      if (requestData.email) localStorage.setItem('step_latest_email', requestData.email);
+      if (requestData.requester_name) localStorage.setItem('step_latest_name', requestData.requester_name);
+    } catch(e) {}
     render(requestData);
     showLoading(false);
     document.getElementById('result').style.display = 'block';

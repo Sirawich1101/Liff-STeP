@@ -456,6 +456,13 @@ async function doSubmit() {
 
 // ── SHOW SUCCESS ──
 function showSuccess(code) {
+  // เก็บรหัสล่าสุดไว้ใน browser
+  try {
+    localStorage.setItem('step_latest_code', code);
+    localStorage.setItem('step_latest_email', document.getElementById('f_email').value);
+    localStorage.setItem('step_latest_name', document.getElementById('f_name').value);
+  } catch(e) {}
+
   // Hide all
   document.querySelector('.header').style.display = 'none';
   document.getElementById('progBar').style.display = 'none';

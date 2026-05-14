@@ -135,15 +135,34 @@ const LIFF_ID = '2009976605-TktdEveT';
 let lineUid = '';
 
 (async function() {
+  // อ่านจาก localStorage ก่อนเลย
+  fillFromLocalStorage();
+
   try {
     await liff.init({ liffId: LIFF_ID });
     if (liff.isLoggedIn()) {
       const p = await liff.getProfile();
       lineUid = p.userId;
-      autoFillLatestCode(lineUid);
+      // ถ้ายังว่าง → ลองดึงจาก API
+      if (!document.getElementById('f_code').value) {
+        autoFillLatestCode(lineUid);
+      } else {
+        // มีรหัสจาก localStorage แล้ว → ตรวจสถานะเลย
+        setTimeout(() => checkStatus(), 300);
+      }
     }
   } catch(e) {}
 })();
+
+function fillFromLocalStorage() {
+  try {
+    const code = localStorage.getItem('step_latest_code');
+    const codeInput = document.getElementById('f_code');
+    if (code && codeInput && !codeInput.value) {
+      codeInput.value = code;
+    }
+  } catch(e) {}
+}
 
 // Status steps definition
 const ALL_STEPS = [
@@ -252,6 +271,8 @@ async function autoFillLatestCode(userId) {
       const codeInput = document.getElementById('f_code');
       if (codeInput && !codeInput.value) {
         codeInput.value = myRequests[0].request_code;
+        // auto-submit เลยไม่ต้องให้ user กดเอง
+        setTimeout(() => checkStatus(), 300);
       }
     }
   } catch(e) {}
