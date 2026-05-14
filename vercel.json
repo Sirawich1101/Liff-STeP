@@ -2,7 +2,7 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/upload.html", "dest": "/upload.html" },
-    { "src": "/status.html", "dest": "/status.html" },
+    { "src": "/request-status.html", "dest": "/request-status.html" },
     { "src": "/admin-list.html", "dest": "/admin-list.html" },
     { "src": "/admin.html", "dest": "/admin.html" },
     { "src": "/document.html", "dest": "/document.html" },
