@@ -146,7 +146,7 @@ textarea { resize: none; height: 90px; }
     </div>
     <div class="field">
       <label>หมายเลขโทรศัพท์ <span class="req">*</span></label>
-      <input type="tel" id="f_tel" placeholder="เช่น 081-234-5678">
+      <input type="tel" id="f_tel" placeholder="081-234-5678" oninput="formatTel(this)" maxlength="12">
       <div class="emsg" id="e_tel">กรุณากรอกหมายเลขโทรศัพท์ที่ถูกต้อง</div>
     </div>
     <div class="field">
@@ -254,7 +254,7 @@ textarea { resize: none; height: 90px; }
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
 const WEBHOOK = '/api/submit';
-const LIFF_ID = '2009976605-TKtdEveT';
+const LIFF_ID = '2009976605-TktdEveT';
 
 let curStep = 1;
 let lineUid = '';
@@ -470,6 +470,13 @@ function showSuccess(code) {
 
 function closePage() {
   try { liff.closeWindow(); } catch(e) { window.close(); }
+}
+
+function formatTel(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 10);
+  if (v.length >= 7) v = v.slice(0,3) + '-' + v.slice(3,6) + '-' + v.slice(6);
+  else if (v.length >= 4) v = v.slice(0,3) + '-' + v.slice(3);
+  input.value = v;
 }
 
 syncProgress(1);
