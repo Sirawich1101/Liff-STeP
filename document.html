@@ -16,17 +16,16 @@
   --text:#1A1A2E;--sub:#6C757D;
   --r:12px;--shadow:0 2px 12px rgba(0,59,113,.08);
 }
-html{font-size:16px}
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .hdr{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:20px 18px 36px;position:relative}
 .hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:var(--bg);border-radius:20px 20px 0 0}
-.hdr-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;margin-bottom:6px}
+.hdr-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:6px}
 .hdr h1{color:#fff;font-size:20px;font-weight:800}
 .hdr p{color:rgba(255,255,255,.65);font-size:13px;margin-top:2px}
 .body{padding:12px 16px 40px}
 .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
 .card-hd{background:var(--navy);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
-.card-code{color:#fff;font-size:17px;font-weight:800;letter-spacing:.5px}
+.card-code{color:#fff;font-size:17px;font-weight:800}
 .card-date{color:rgba(255,255,255,.6);font-size:12px}
 .card-bd{padding:14px 16px}
 .sec-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--navy3)}
@@ -34,6 +33,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .info-cell{background:var(--white);padding:9px 12px;font-size:14px}
 .info-cell.key{background:#FAFBFC;color:var(--sub);font-weight:600;font-size:13px}
 .info-cell.val{color:var(--text);font-weight:500}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
 .status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
 .status-pill.delivered{background:var(--amber2);color:var(--amber)}
 .status-pill.received{background:var(--green2);color:var(--green)}
@@ -41,16 +41,17 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .file-item{display:flex;align-items:center;gap:12px;background:var(--navy3);border-radius:10px;padding:12px 14px}
 .file-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.file-info{flex:1}
 .file-name{font-size:14px;font-weight:700;color:var(--navy)}
-.file-size{font-size:12px;color:var(--sub);margin-top:2px}
+.file-sub{font-size:12px;color:var(--sub);margin-top:2px}
 .btn-row{display:flex;flex-direction:column;gap:10px}
 .btn{width:100%;height:52px;border:none;border-radius:10px;font-family:'Sarabun',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:var(--navy);color:#fff}
 .btn-outline{background:var(--white);color:var(--navy);border:2px solid var(--navy)}
-.btn-success-solid{background:var(--green);color:#fff}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline:disabled{background:#f0f0f0;color:#aaa;border-color:#ddd;cursor:not-allowed;transform:none}
+.btn-success-solid{background:var(--green);color:#fff;border:none}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.hint{font-size:12px;color:var(--sub);text-align:center;margin-top:6px}
 .alert{border-radius:10px;padding:12px 14px;font-size:14px;margin-top:12px;display:none;line-height:1.5}
 .alert.show{display:block}
 .alert.success{background:var(--green2);color:var(--green);border:1px solid #A9DFBF}
@@ -59,7 +60,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .success-screen{text-align:center;padding:30px 20px;background:var(--green2);border-radius:var(--r);border:1px solid #A9DFBF}
 .success-screen h3{color:var(--green);font-size:20px;font-weight:800;margin-bottom:8px}
 .success-screen p{color:var(--sub);font-size:14px;line-height:1.7}
-.success-screen .code-badge{display:inline-block;background:var(--navy3);color:var(--navy);font-weight:800;padding:4px 14px;border-radius:20px;font-size:15px;margin-bottom:14px}
+.code-badge{display:inline-block;background:var(--navy3);color:var(--navy);font-weight:800;padding:4px 14px;border-radius:20px;font-size:15px;margin-bottom:14px}
 #loading{text-align:center;padding:50px 20px;color:var(--sub)}
 .loader{width:36px;height:36px;border:3px solid var(--navy3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -69,13 +70,11 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="hdr-badge">เอกสารแบบแปลน</div>
   <h1>รับเอกสาร</h1>
   <p>STeP CMU — Science and Technology Park</p>
 </div>
-
 <div class="body">
   <div id="loading"><div class="loader"></div><div>กำลังโหลดข้อมูล...</div></div>
 
@@ -85,7 +84,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
         <span class="card-code" id="dCode">—</span>
         <span class="card-date" id="dDate">—</span>
       </div>
-      <div class="card-bd" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="status-row">
         <span style="font-size:14px;color:var(--sub)">สถานะ</span>
         <span class="status-pill delivered" id="dStatus">รอรับเอกสาร</span>
       </div>
@@ -109,8 +108,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
         <div class="file-list" id="fileList"></div>
         <div class="btn-row">
           <button class="btn btn-primary" id="downloadBtn" onclick="downloadAll()">ดาวน์โหลดเอกสาร</button>
-          <button class="btn btn-outline" id="confirmBtn" onclick="confirmReceipt()">ยืนยันรับเอกสาร</button>
+          <button class="btn btn-outline" id="confirmBtn" onclick="confirmReceipt()" disabled>ยืนยันรับเอกสาร</button>
         </div>
+        <div class="hint" id="hintText">กดดาวน์โหลดก่อน จึงจะสามารถยืนยันรับได้</div>
         <div id="alertBox" class="alert"></div>
       </div>
     </div>
@@ -128,108 +128,242 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 <script>
+// ─── FILE ID MAP ───────────────────────────────────────────────────────────
+// เพิ่ม file ID ตรงนี้เมื่ออัปโหลดไฟล์ใหม่ลง Drive
 const FILE_ID_MAP = {
-  'D':{'1':{'architectural.pdf':'1jNSAu1KMPWdC2T9rRiVndv-1qG6jyetY','structural.pdf':'','electrical.pdf':'','plumbing.pdf':'','hvac.pdf':'','general.pdf':''},'2':{},'3':{},'4':{},'5':{}},
+  'D':{
+    '1':{
+      'architectural.pdf':'1jNSAu1KMPWdC2T9rRiVndv-1qG6jyetY',
+      'structural.pdf':'',
+      'electrical.pdf':'',
+      'plumbing.pdf':'',
+      'hvac.pdf':'',
+      'general.pdf':'',
+    },
+    '2':{},'3':{},'4':{},'5':{},
+  },
   'A':{'1':{},'2':{},'3':{}},
   'B':{'1':{},'2':{},'3':{}},
   'C':{'1':{},'2':{},'3':{}},
   'N':{'1':{},'2':{}},
 };
-const FILE_LABELS = {'architectural.pdf':'แบบสถาปัตยกรรม','structural.pdf':'แบบวิศวกรรมโครงสร้าง','electrical.pdf':'แบบระบบไฟฟ้า','plumbing.pdf':'แบบระบบสุขาภิบาล','hvac.pdf':'แบบระบบปรับอากาศ','general.pdf':'แบบแปลนทั่วไป'};
-const TYPE_TO_FILE = {'แบบสถาปัตยกรรม':'architectural.pdf','สถาปัตยกรรม':'architectural.pdf','แบบวิศวกรรมโครงสร้าง':'structural.pdf','วิศวกรรมโครงสร้าง':'structural.pdf','โครงสร้าง':'structural.pdf','แบบระบบไฟฟ้า':'electrical.pdf','ระบบไฟฟ้า':'electrical.pdf','ไฟฟ้า':'electrical.pdf','แบบระบบสุขาภิบาล':'plumbing.pdf','ระบบสุขาภิบาล':'plumbing.pdf','สุขาภิบาล':'plumbing.pdf','แบบระบบปรับอากาศ':'hvac.pdf','ระบบปรับอากาศ':'hvac.pdf','แบบระบบเครื่องกล':'hvac.pdf','แบบแปลนทั่วไป':'general.pdf'};
 
-const params=new URLSearchParams(location.search);
-const code=params.get('code')||'';
-const token=params.get('token')||'';
-const autoConfirm=params.get('confirm')==='1';
-let requestData=null, lineUserId='', fileLinks=[];
+const FILE_LABELS = {
+  'architectural.pdf':'แบบสถาปัตยกรรม',
+  'structural.pdf':'แบบวิศวกรรมโครงสร้าง',
+  'electrical.pdf':'แบบระบบไฟฟ้า',
+  'plumbing.pdf':'แบบระบบสุขาภิบาล',
+  'hvac.pdf':'แบบระบบปรับอากาศ',
+  'general.pdf':'แบบแปลนทั่วไป',
+};
 
-window.addEventListener('DOMContentLoaded',init);
+const TYPE_TO_FILE = {
+  'แบบสถาปัตยกรรม':'architectural.pdf','สถาปัตยกรรม':'architectural.pdf',
+  'แบบวิศวกรรมโครงสร้าง':'structural.pdf','วิศวกรรมโครงสร้าง':'structural.pdf','โครงสร้าง':'structural.pdf',
+  'แบบระบบไฟฟ้า':'electrical.pdf','ระบบไฟฟ้า':'electrical.pdf','ไฟฟ้า':'electrical.pdf',
+  'แบบระบบสุขาภิบาล':'plumbing.pdf','ระบบสุขาภิบาล':'plumbing.pdf','สุขาภิบาล':'plumbing.pdf',
+  'แบบระบบปรับอากาศ':'hvac.pdf','ระบบปรับอากาศ':'hvac.pdf','แบบระบบเครื่องกล':'hvac.pdf',
+  'แบบแปลนทั่วไป':'general.pdf',
+};
 
-async function init(){
-  if(!code){showLoading(false);showAlert('ไม่พบรหัสคำขอ — กรุณาเปิดลิงก์จาก LINE','error');return;}
-  try{if(window.liff){await liff.init({liffId:'2009976605-TktdEveT'});if(liff.isLoggedIn()){const p=await liff.getProfile();lineUserId=p.userId;}}}catch(e){}
+// ─── STATE ────────────────────────────────────────────────────────────────
+const params      = new URLSearchParams(location.search);
+const code        = params.get('code') || '';
+let requestData   = null;
+let lineUserId    = '';
+let fileLinks     = [];
+let hasDownloaded = false;
+
+window.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  if (!code) {
+    showLoading(false);
+    showAlert('ไม่พบรหัสคำขอ — กรุณาเปิดลิงก์จาก LINE', 'error');
+    return;
+  }
+  try {
+    if (window.liff) {
+      await liff.init({ liffId: '2009976605-TktdEveT' });
+      if (liff.isLoggedIn()) {
+        const p = await liff.getProfile();
+        lineUserId = p.userId;
+      }
+    }
+  } catch(e) {}
   await loadRequest();
 }
 
-async function loadRequest(){
-  try{
-    const res=await fetch('/api/get-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestCode:code})});
-    const json=await res.json();
-    if(!json.found||!json.request){showLoading(false);showAlert(`ไม่พบคำขอ "${code}" ในระบบ`,'error');return;}
-    requestData=json.request;
+async function loadRequest() {
+  try {
+    const res  = await fetch('/api/get-request', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ requestCode: code })
+    });
+    const json = await res.json();
+    if (!json.found || !json.request) {
+      showLoading(false);
+      showAlert('ไม่พบคำขอ "' + code + '" ในระบบ', 'error');
+      return;
+    }
+    requestData = json.request;
     render(requestData);
     showLoading(false);
-    document.getElementById('result').style.display='block';
-    if(autoConfirm&&requestData.status==='DELIVERED')setTimeout(()=>confirmReceipt(),800);
-  }catch(e){showLoading(false);showAlert('เกิดข้อผิดพลาด: '+e.message,'error');}
+    document.getElementById('result').style.display = 'block';
+  } catch(e) {
+    showLoading(false);
+    showAlert('เกิดข้อผิดพลาด: ' + e.message, 'error');
+  }
 }
 
-function render(r){
-  document.getElementById('dCode').textContent=r.request_code||code;
-  document.getElementById('dDate').textContent=formatDate(r.created_at);
-  document.getElementById('dName').textContent=r.requester_name||'—';
-  document.getElementById('dType').textContent=r.document_type||'—';
-  document.getElementById('dArea').textContent=r.area||'—';
-  document.getElementById('dReqDate').textContent=r.required_date||'—';
-  const statusEl=document.getElementById('dStatus');
-  if(r.status==='RECEIVED'){statusEl.textContent='รับเอกสารแล้ว';statusEl.className='status-pill received';showConfirmDone(r.request_code||code);return;}
+function render(r) {
+  document.getElementById('dCode').textContent    = r.request_code || code;
+  document.getElementById('dDate').textContent    = formatDate(r.created_at);
+  document.getElementById('dName').textContent    = r.requester_name || '—';
+  document.getElementById('dType').textContent    = r.document_type  || '—';
+  document.getElementById('dArea').textContent    = r.area           || '—';
+  document.getElementById('dReqDate').textContent = r.required_date  || '—';
 
-  const building=(r.building||'').toUpperCase();
-  const floor=String(r.floor||'1');
-  const folderFiles=(FILE_ID_MAP[building]||{})[floor]||{};
-  const types=(r.document_type||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const statusEl = document.getElementById('dStatus');
+  if (r.status === 'RECEIVED') {
+    statusEl.textContent = 'รับเอกสารแล้ว';
+    statusEl.className   = 'status-pill received';
+    showConfirmDone(r.request_code || code);
+    return;
+  }
 
-  fileLinks=[];
-  types.forEach(type=>{
-    let fname=null;
-    for(const[key,f]of Object.entries(TYPE_TO_FILE)){if(type.includes(key)||key.includes(type)){fname=f;break;}}
-    if(!fname)return;
-    const fileId=folderFiles[fname]||'';
-    fileLinks.push({label:FILE_LABELS[fname]||type,fname,fileId,url:fileId?`https://drive.google.com/uc?export=download&id=${fileId}`:null});
+  // Build file links
+  const building    = (r.building || '').toString().toUpperCase().replace('อาคาร','').trim();
+  const floor       = String(r.floor || '1').replace('ชั้น','').trim();
+  const folderFiles = (FILE_ID_MAP[building] || {})[floor] || {};
+  const types       = (r.document_type || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  fileLinks = [];
+  types.forEach(type => {
+    let fname = null;
+    for (const [key, f] of Object.entries(TYPE_TO_FILE)) {
+      if (type.includes(key) || key.includes(type)) { fname = f; break; }
+    }
+    if (!fname) return;
+    const fileId = folderFiles[fname] || '';
+    fileLinks.push({
+      label: FILE_LABELS[fname] || type,
+      fname,
+      fileId,
+      url: fileId ? 'https://drive.google.com/uc?export=download&id=' + fileId : null,
+      viewUrl: fileId ? 'https://drive.google.com/file/d/' + fileId + '/view' : null,
+    });
   });
 
-  const container=document.getElementById('fileList');
-  container.innerHTML=fileLinks.length===0
-    ?'<div style="font-size:14px;color:var(--sub);padding:12px 0">ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่</div>'
-    :fileLinks.map(f=>`<div class="file-item"><div class="file-icon">PDF</div><div class="file-info"><div class="file-name">${f.label}</div><div class="file-size">${f.url?'พร้อมดาวน์โหลด':'ไม่พบไฟล์ในระบบ'}</div></div></div>`).join('');
+  const container = document.getElementById('fileList');
+  if (fileLinks.length === 0) {
+    container.innerHTML = '<div style="font-size:14px;color:var(--sub);padding:12px 0">ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่</div>';
+    document.getElementById('downloadBtn').disabled = true;
+  } else {
+    container.innerHTML = fileLinks.map(f => `
+      <div class="file-item">
+        <div class="file-icon">PDF</div>
+        <div>
+          <div class="file-name">${f.label}</div>
+          <div class="file-sub">${f.url ? 'พร้อมดาวน์โหลด' : 'ไม่พบไฟล์'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
 
-  if(r.status==='RECEIVED'){
-    const cb=document.getElementById('confirmBtn');
-    cb.disabled=true;cb.textContent='ยืนยันรับเรียบร้อยแล้ว';cb.className='btn btn-success-solid';
+  if (r.status === 'RECEIVED') {
+    document.getElementById('confirmBtn').disabled  = false;
+    document.getElementById('confirmBtn').className = 'btn btn-success-solid';
+    document.getElementById('confirmBtn').textContent = 'ยืนยันรับเรียบร้อยแล้ว';
+    document.getElementById('hintText').style.display = 'none';
   }
 }
 
-function downloadAll(){
-  const valid=fileLinks.filter(f=>f.url);
-  if(valid.length===0){showAlert('ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่','warn');return;}
-  valid.forEach((f,i)=>setTimeout(()=>window.open(f.url,'_blank'),i*600));
-  showAlert(`กำลังเปิด ${valid.length} ไฟล์ หากเบราว์เซอร์ถาม ให้กด "Allow"`,'warn');
+// ─── DOWNLOAD ────────────────────────────────────────────────────────────
+function downloadAll() {
+  const valid = fileLinks.filter(f => f.url);
+  if (valid.length === 0) {
+    showAlert('ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่', 'warn');
+    return;
+  }
+
+  // เปิดทุกไฟล์ทีละอัน
+  valid.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href     = f.url;
+      a.download = f.fname;
+      a.target   = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, i * 800);
+  });
+
+  // ปลดล็อคปุ่มยืนยัน
+  hasDownloaded = true;
+  const confirmBtn = document.getElementById('confirmBtn');
+  confirmBtn.disabled = false;
+  document.getElementById('hintText').style.display = 'none';
+
+  showAlert('กำลังดาวน์โหลด ' + valid.length + ' ไฟล์ หากไม่เริ่ม ให้อนุญาต popup', 'warn');
 }
 
-async function confirmReceipt(){
-  const btn=document.getElementById('confirmBtn');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>กำลังยืนยัน...';
-  try{
-    const res=await fetch('/api/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestCode:code,lineUserId:lineUserId||requestData?.line_user_id||'',token})});
-    const json=await res.json().catch(()=>({}));
-    if(res.ok&&json.success!==false){showConfirmDone(code);}
-    else throw new Error(json.error||json.message||'เกิดข้อผิดพลาด');
-  }catch(e){
-    showAlert('เกิดข้อผิดพลาด: '+e.message,'error');
-    btn.disabled=false;btn.textContent='ยืนยันรับเอกสาร';
+// ─── CONFIRM ──────────────────────────────────────────────────────────────
+async function confirmReceipt() {
+  if (!hasDownloaded && requestData?.status !== 'DELIVERED') return;
+
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>กำลังยืนยัน...';
+
+  try {
+    const res = await fetch('/api/confirm', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        requestCode: code,
+        lineUserId:  lineUserId || requestData?.line_user_id || '',
+      })
+    });
+    const json = await res.json().catch(() => ({}));
+    if (res.ok && json.success !== false) {
+      showConfirmDone(code);
+    } else {
+      throw new Error(json.error || json.message || 'เกิดข้อผิดพลาด');
+    }
+  } catch(e) {
+    showAlert('เกิดข้อผิดพลาด: ' + e.message, 'error');
+    btn.disabled  = false;
+    btn.textContent = 'ยืนยันรับเอกสาร';
   }
 }
 
-function showConfirmDone(requestCode){
-  document.getElementById('result').style.display='none';
-  document.getElementById('donCode').textContent=requestCode||code;
-  document.getElementById('confirmDone').style.display='block';
+function showConfirmDone(requestCode) {
+  document.getElementById('result').style.display   = 'none';
+  document.getElementById('donCode').textContent    = requestCode || code;
+  document.getElementById('confirmDone').style.display = 'block';
 }
 
-function showLoading(show){document.getElementById('loading').style.display=show?'block':'none';}
-function showAlert(msg,type='error'){const el=document.getElementById('alertBox');el.textContent=msg;el.className=`alert ${type} show`;}
-function formatDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric',timeZone:'Asia/Bangkok'});}catch{return iso;}}
+function showLoading(show) {
+  document.getElementById('loading').style.display = show ? 'block' : 'none';
+}
+
+function showAlert(msg, type = 'error') {
+  const el = document.getElementById('alertBox');
+  el.textContent = msg;
+  el.className   = 'alert ' + type + ' show';
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleDateString('th-TH', {
+      year:'numeric', month:'short', day:'numeric', timeZone:'Asia/Bangkok'
+    });
+  } catch { return iso; }
+}
 </script>
 </body>
 </html>
