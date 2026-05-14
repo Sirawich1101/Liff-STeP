@@ -248,4 +248,4 @@ This project is developed for **STeP CMU (Science and Technology Park, Chiang Ma
 
 ---
 
-*Developed by Sirawich Ingkawat — STeP CMU Internship Project 2569*
+*Developed by Sirawich Ingkawatcharakul — STeP CMU Internship Project 2569*
