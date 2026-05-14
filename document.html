@@ -131,14 +131,14 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 // ─── FILE ID MAP ───────────────────────────────────────────────────────────
 // เพิ่ม file ID ตรงนี้เมื่ออัปโหลดไฟล์ใหม่ลง Drive
 const FILE_ID_MAP = {
-  'D':{
-    '1':{
-      'architectural.pdf':'1jNSAu1KMPWdC2T9rRiVndv-1qG6jyetY',
-      'structural.pdf':'',
-      'electrical.pdf':'',
-      'plumbing.pdf':'',
-      'hvac.pdf':'',
-      'general.pdf':'',
+  'D': {
+    '1': {
+      'architectural.pdf': '1jNSAu1KMPWdC2T9rRiVndv-1qG6jyetY', // มีแล้ว
+      'structural.pdf':    '',   // ← วาง ID เมื่ออัปโหลด
+      'electrical.pdf':    '',
+      'plumbing.pdf':      '',
+      'hvac.pdf':          '',
+      'general.pdf':       '',
     },
     '2':{},'3':{},'4':{},'5':{},
   },
@@ -282,32 +282,30 @@ function render(r) {
 
 // ─── DOWNLOAD ────────────────────────────────────────────────────────────
 function downloadAll() {
-  const valid = fileLinks.filter(f => f.url);
+  const valid = fileLinks.filter(f => f.viewUrl || f.url);
   if (valid.length === 0) {
     showAlert('ไม่พบไฟล์ในระบบ กรุณาติดต่อเจ้าหน้าที่', 'warn');
     return;
   }
 
-  // เปิดทุกไฟล์ทีละอัน
-  valid.forEach((f, i) => {
-    setTimeout(() => {
-      const a = document.createElement('a');
-      a.href     = f.url;
-      a.download = f.fname;
-      a.target   = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }, i * 800);
-  });
+  // เปิด Google Drive viewer ทีละไฟล์
+  if (valid.length === 1) {
+    // ไฟล์เดียว — เปิดตรง
+    window.location.href = valid[0].viewUrl || valid[0].url;
+  } else {
+    // หลายไฟล์ — เปิดทีละอัน
+    valid.forEach((f, i) => {
+      setTimeout(() => {
+        window.open(f.viewUrl || f.url, '_blank');
+      }, i * 1000);
+    });
+    showAlert('เปิด ' + valid.length + ' ไฟล์ใน Google Drive กรุณาอนุญาต popup', 'warn');
+  }
 
   // ปลดล็อคปุ่มยืนยัน
   hasDownloaded = true;
-  const confirmBtn = document.getElementById('confirmBtn');
-  confirmBtn.disabled = false;
+  document.getElementById('confirmBtn').disabled = false;
   document.getElementById('hintText').style.display = 'none';
-
-  showAlert('กำลังดาวน์โหลด ' + valid.length + ' ไฟล์ หากไม่เริ่ม ให้อนุญาต popup', 'warn');
 }
 
 // ─── CONFIRM ──────────────────────────────────────────────────────────────
