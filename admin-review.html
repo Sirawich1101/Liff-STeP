@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คัดกรองคำขอ — STeP CMU Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#003B71;--navy2:#1A5A9A;--navy3:#EBF3FB;
+  --green:#1A7F45;--green2:#EAFAF1;
+  --amber:#B9770E;--amber2:#FEF9E7;
+  --red:#C0392B;--red2:#FDEDEC;
+  --border:#DEE2E6;--bg:#F5F7FA;--white:#FFFFFF;
+  --text:#1A1A2E;--sub:#6C757D;
+}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:20px 18px 36px;position:relative}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:var(--bg);border-radius:20px 20px 0 0}
+.hdr-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:6px}
+.hdr h1{color:#fff;font-size:20px;font-weight:800}
+.hdr p{color:rgba(255,255,255,.65);font-size:13px;margin-top:2px}
+.body{padding:12px 16px 40px;max-width:600px;margin:0 auto}
+.card{background:var(--white);border-radius:12px;box-shadow:0 2px 12px rgba(0,59,113,.08);margin-bottom:14px;overflow:hidden}
+.card-hd{background:var(--navy);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.card-code{color:#fff;font-size:17px;font-weight:800}
+.card-bd{padding:14px 16px}
+.sec-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--navy3)}
+.info-grid{display:grid;grid-template-columns:90px 1fr;gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.info-cell{background:var(--white);padding:9px 12px;font-size:14px}
+.info-cell.key{background:#FAFBFC;color:var(--sub);font-weight:600;font-size:13px}
+.info-cell.val{color:var(--text);font-weight:500}
+label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;margin-top:14px}
+select,input,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:14px;background:var(--white)}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--navy)}
+textarea{resize:vertical;height:80px}
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.btn{width:100%;height:48px;border:none;border-radius:10px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-danger{background:var(--white);color:var(--red);border:2px solid var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.file-link{display:block;padding:10px 14px;background:var(--navy3);border-radius:8px;color:var(--navy);text-decoration:none;font-weight:600;font-size:14px;margin-bottom:8px}
+.alert{border-radius:10px;padding:12px 14px;font-size:14px;margin-top:12px;display:none}
+.alert.show{display:block}
+.alert.success{background:var(--green2);color:var(--green)}
+.alert.error{background:var(--red2);color:var(--red)}
+#loading{text-align:center;padding:50px 20px;color:var(--sub)}
+.loader{width:36px;height:36px;border:3px solid var(--navy3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px 20px;color:var(--sub)}
+.item-card{background:var(--white);border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.05);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.item-card:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,59,113,.12)}
+.item-code{font-weight:800;color:var(--navy);font-size:15px}
+.item-meta{font-size:13px;color:var(--sub);margin-top:4px}
+.status-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--amber2);color:var(--amber)}
+.success-screen{text-align:center;padding:40px 20px;background:var(--green2);border-radius:12px;border:1px solid #A9DFBF}
+.success-screen h3{color:var(--green);font-size:20px;font-weight:800;margin-bottom:10px}
+.success-screen p{color:var(--sub);font-size:14px;line-height:1.7}
+#listView,#detailView,#successView{display:none}
+.back-btn{background:none;border:none;color:var(--navy);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-badge">ADMIN — คัดกรอง</div>
+  <h1>คำขอที่รอส่งวิศวกร</h1>
+  <p>เลือกคำขอ → มอบหมายงานให้วิศวกรตรวจสอบ</p>
+</div>
+<div class="body">
+  <div id="loading"><div class="loader"></div><div>กำลังโหลดข้อมูล...</div></div>
+
+  <div id="listView">
+    <div id="itemList"></div>
+    <div class="empty" id="emptyMsg" style="display:none">ไม่มีคำขอที่รอคัดกรอง</div>
+  </div>
+
+  <div id="detailView">
+    <button class="back-btn" onclick="backToList()">← กลับไปรายการ</button>
+    <div class="card">
+      <div class="card-hd"><span class="card-code" id="dCode">—</span></div>
+      <div class="card-bd">
+        <div class="sec-title">รายละเอียดคำขอ</div>
+        <div class="info-grid">
+          <div class="info-cell key">ผู้ขอ</div><div class="info-cell val" id="dName">—</div>
+          <div class="info-cell key">ประเภท</div><div class="info-cell val" id="dType">—</div>
+          <div class="info-cell key">พื้นที่</div><div class="info-cell val" id="dArea">—</div>
+          <div class="info-cell key">อีเมล</div><div class="info-cell val" id="dEmail">—</div>
+          <div class="info-cell key">หมายเหตุ</div><div class="info-cell val" id="dNote">—</div>
+        </div>
+
+        <div class="sec-title">ไฟล์ที่ผู้ขอส่งกลับ</div>
+        <div id="userFiles">
+          <div style="color:var(--sub);font-size:13px;padding:8px 0">ไฟล์ User ดูได้ใน Google Drive โฟลเดอร์ของคำขอนี้</div>
+          <a class="file-link" id="driveFolder" href="#" target="_blank">เปิดโฟลเดอร์ใน Drive</a>
+        </div>
+
+        <div class="sec-title">มอบหมายงาน</div>
+        <label>เลือกวิศวกร / สถาปนิก</label>
+        <select id="engineerSelect"><option value="">-- เลือก --</option></select>
+
+        <label>หมายเหตุถึงวิศวกร</label>
+        <textarea id="adminNotes" placeholder="ระบุรายละเอียดที่ต้องตรวจ"></textarea>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="assignBtn" onclick="assignEngineer()">ส่งให้วิศวกรตรวจสอบ</button>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="successView">
+    <div class="success-screen">
+      <h3>ส่งงานให้วิศวกรเรียบร้อย</h3>
+      <p id="successMsg">ระบบส่งแจ้งเตือนให้วิศวกรทาง LINE แล้ว</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const REQUESTS_FOLDER_ID = '1XEOJy1QHhvggPR8n2-USS6RKdYM8aDB4';
+let allRequests = [];
+let engineers   = [];
+let currentReq  = null;
+
+window.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  try {
+    // โหลด requests
+    const [reqRes, engRes] = await Promise.all([
+      fetch('/api/admin-list', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' }),
+      fetch('/api/engineer-list', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' }),
+    ]);
+    const reqJson = await reqRes.json();
+    const engJson = await engRes.json().catch(() => ({engineers:[]}));
+
+    allRequests = (reqJson.requests || []).filter(r => r.status === 'UNDER_REVIEW');
+    engineers   = (engJson.engineers || []).filter(e => e.active === 'TRUE' || e.active === true);
+
+    document.getElementById('loading').style.display = 'none';
+    renderList();
+  } catch(e) {
+    document.getElementById('loading').innerHTML = '<div style="color:var(--red)">เกิดข้อผิดพลาด: ' + e.message + '</div>';
+  }
+}
+
+function renderList() {
+  const view = document.getElementById('listView');
+  const list = document.getElementById('itemList');
+  view.style.display = 'block';
+
+  if (allRequests.length === 0) {
+    document.getElementById('emptyMsg').style.display = 'block';
+    return;
+  }
+
+  list.innerHTML = allRequests.map(r => `
+    <div class="item-card" onclick="openDetail('${r.request_code}')">
+      <div class="item-code">${r.request_code}</div>
+      <div class="item-meta">${r.requester_name||'-'} · ${r.document_type||'-'}</div>
+      <div class="item-meta">${r.area||'-'}</div>
+      <div style="margin-top:8px"><span class="status-pill">รอคัดกรอง</span></div>
+    </div>
+  `).join('');
+}
+
+function openDetail(code) {
+  currentReq = allRequests.find(r => r.request_code === code);
+  if (!currentReq) return;
+
+  document.getElementById('listView').style.display   = 'none';
+  document.getElementById('detailView').style.display = 'block';
+
+  document.getElementById('dCode').textContent  = currentReq.request_code;
+  document.getElementById('dName').textContent  = currentReq.requester_name||'-';
+  document.getElementById('dType').textContent  = currentReq.document_type||'-';
+  document.getElementById('dArea').textContent  = currentReq.area||'-';
+  document.getElementById('dEmail').textContent = currentReq.email||'-';
+  document.getElementById('dNote').textContent  = currentReq.revised_file_urls||currentReq.note||'-';
+
+  // Drive folder link (สำหรับ admin ดูไฟล์)
+  document.getElementById('driveFolder').href = `https://drive.google.com/drive/folders/${REQUESTS_FOLDER_ID}`;
+
+  // Populate engineers
+  const sel = document.getElementById('engineerSelect');
+  sel.innerHTML = '<option value="">-- เลือก --</option>' +
+    engineers.map(e => `<option value="${e.engineer_id}|${e.line_user_id}|${e.name}">${e.name} (${e.specialty||'ทั่วไป'})</option>`).join('');
+}
+
+function backToList() {
+  document.getElementById('detailView').style.display = 'none';
+  document.getElementById('listView').style.display   = 'block';
+  document.getElementById('alertBox').className = 'alert';
+}
+
+async function assignEngineer() {
+  const sel = document.getElementById('engineerSelect').value;
+  if (!sel) { showAlert('กรุณาเลือกวิศวกร', 'error'); return; }
+
+  const [engineerId, engineerUserId, engineerName] = sel.split('|');
+  const adminNotes = document.getElementById('adminNotes').value.trim();
+
+  const btn = document.getElementById('assignBtn');
+  btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+
+  try {
+    const res = await fetch('/api/admin-assign-engineer', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        requestCode: currentReq.request_code,
+        engineerId, engineerUserId, engineerName,
+        adminNotes,
+      })
+    });
+    const json = await res.json();
+    if (res.ok && json.success !== false) {
+      document.getElementById('detailView').style.display  = 'none';
+      document.getElementById('successView').style.display = 'block';
+      document.getElementById('successMsg').textContent =
+        `วิศวกร ${engineerName} ได้รับแจ้งเตือนแล้ว · Review ID: ${json.reviewId||'-'}`;
+    } else {
+      throw new Error(json.error||'ไม่สามารถส่งได้');
+    }
+  } catch(e) {
+    showAlert('เกิดข้อผิดพลาด: ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = 'ส่งให้วิศวกรตรวจสอบ';
+  }
+}
+
+function showAlert(msg, type) {
+  const el = document.getElementById('alertBox');
+  el.textContent = msg;
+  el.className = `alert ${type} show`;
+}
+</script>
+</body>
+</html>
