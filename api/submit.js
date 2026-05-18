@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   try {
     const N8N_WEBHOOK_URL =
-      "https://sirawichhhhhhhh.app.n8n.cloud/webhook/submit-request";
+      "https://zennnnn.app.n8n.cloud/webhook/submit-request";
 
     const response = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",

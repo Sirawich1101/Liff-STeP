@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      'https://sirawichhhhhhhh.app.n8n.cloud/webhook/check-status',
+      'https://zennnnn.app.n8n.cloud/webhook/check-status',
       {
         method: 'POST',
         headers: {

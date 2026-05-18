@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const response = await fetch('https://sirawichhhhhhhh.app.n8n.cloud/webhook/admin-approve', {
+    const response = await fetch('https://zennnnn.app.n8n.cloud/webhook/admin-approve', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
